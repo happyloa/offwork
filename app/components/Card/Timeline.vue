@@ -108,7 +108,7 @@ const chartData = computed(() => {
       </p>
       <li
         v-for="{ label, color } in chartLabel[props.activeView].items"
-        :key="index"
+        :key="label"
         class="flex items-center gap-1"
       >
         <span
