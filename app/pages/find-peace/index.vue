@@ -13,7 +13,11 @@ definePageMeta({
 </script>
 
 <template>
-  <main class="bg-neutral-950 px-4 pt-4">
+  <!-- 內容不滿一頁時撐滿剩餘高度，讓底部橫杠貼齊畫面底部
+       （扣掉 HeaderBar 48px；sm 以上再扣狀態列 56px） -->
+  <main
+    class="flex min-h-[calc(100%-48px)] flex-col bg-neutral-950 px-4 pt-4 sm:min-h-[calc(100%-104px)]"
+  >
     <!-- Tab -->
     <nav
       class="mb-4 grid grid-cols-2 rounded-full bg-neutral-900 p-1 text-center"
@@ -44,118 +48,25 @@ definePageMeta({
     <!-- 各種呼吸法連結 -->
     <nav>
       <ul class="space-y-4">
-        <!-- 平穩呼吸法 -->
-        <li>
+        <li v-for="technique in BREATHING_TECHNIQUES" :key="technique.id">
           <NuxtLink
-            to="/find-peace/calm-breathe"
+            :to="`/find-peace/${technique.id}`"
             class="gradient-card-border rounded-[32px]"
           >
             <article
               class="flex items-center gap-5 rounded-[32px] bg-neutral-900 p-5"
             >
               <img
-                src="/images/find-peace/breathe1.webp"
-                alt="平穩呼吸法"
-                class="w-[120px]"
-              />
-              <div>
-                <h2 class="mb-1 text-md font-bold text-white">平穩呼吸法</h2>
-                <p class="text-md text-neutral-300">
-                  慢慢吸，輕輕吐，讓節奏帶你回到平靜。
-                </p>
-              </div>
-            </article>
-          </NuxtLink>
-        </li>
-        <!-- 腹式呼吸法（沒有頁面純裝飾） -->
-        <li>
-          <NuxtLink
-            to="/find-peace/calm-breathe"
-            class="gradient-card-border rounded-[32px]"
-          >
-            <article
-              class="flex items-center gap-5 rounded-[32px] bg-neutral-900 p-5"
-            >
-              <img
-                src="/images/find-peace/breathe2.webp"
-                alt="腹式呼吸法"
-                class="w-[120px]"
-              />
-              <div>
-                <h2 class="mb-1 text-md font-bold text-white">腹式呼吸法</h2>
-                <p class="text-md text-neutral-300">
-                  感受腹部起伏，深呼吸讓身體鬆開一點。
-                </p>
-              </div>
-            </article>
-          </NuxtLink>
-        </li>
-        <!-- 4-7-8 呼吸（沒有頁面純裝飾） -->
-        <li>
-          <NuxtLink
-            to="/find-peace/calm-breathe"
-            class="gradient-card-border rounded-[32px]"
-          >
-            <article
-              class="flex items-center gap-5 rounded-[32px] bg-neutral-900 p-5"
-            >
-              <img
-                src="/images/find-peace/breathe3.webp"
-                alt="4-7-8 呼吸"
-                class="w-[120px]"
-              />
-              <div>
-                <h2 class="mb-1 text-md font-bold text-white">4-7-8 呼吸</h2>
-                <p class="text-md text-neutral-300">
-                  吸 4 秒，憋氣 7 秒，吐氣 8 秒，進入休息。
-                </p>
-              </div>
-            </article>
-          </NuxtLink>
-        </li>
-        <!-- 4-4-4 方格呼吸（沒有頁面純裝飾） -->
-        <li>
-          <NuxtLink
-            to="/find-peace/calm-breathe"
-            class="gradient-card-border rounded-[32px]"
-          >
-            <article
-              class="flex items-center gap-5 rounded-[32px] bg-neutral-900 p-5"
-            >
-              <img
-                src="/images/find-peace/breathe4.webp"
-                alt="4-4-4 方格呼吸"
+                :src="technique.image"
+                :alt="technique.name"
                 class="w-[120px]"
               />
               <div>
                 <h2 class="mb-1 text-md font-bold text-white">
-                  4-4-4 方格呼吸
+                  {{ technique.name }}
                 </h2>
                 <p class="text-md text-neutral-300">
-                  用呼吸畫出方形，節奏讓心穩定下來。
-                </p>
-              </div>
-            </article>
-          </NuxtLink>
-        </li>
-        <!-- 平穩呼吸法 -->
-        <li>
-          <NuxtLink
-            to="/find-peace/calm-breathe"
-            class="gradient-card-border rounded-[32px]"
-          >
-            <article
-              class="flex items-center gap-5 rounded-[32px] bg-neutral-900 p-5"
-            >
-              <img
-                src="/images/find-peace/breathe1.webp"
-                alt="平穩呼吸法"
-                class="w-[120px]"
-              />
-              <div>
-                <h2 class="mb-1 text-md font-bold text-white">平穩呼吸法</h2>
-                <p class="text-md text-neutral-300">
-                  慢慢吸，輕輕吐，讓節奏帶你回到平靜。
+                  {{ technique.summary }}
                 </p>
               </div>
             </article>
@@ -163,7 +74,7 @@ definePageMeta({
         </li>
       </ul>
     </nav>
-    <div class="sticky bottom-0 pb-2 pt-[27px]">
+    <div class="sticky bottom-0 mt-auto pb-2 pt-[27px]">
       <LayoutBottomBar />
     </div>
   </main>

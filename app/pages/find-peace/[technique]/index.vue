@@ -1,18 +1,34 @@
 <script setup>
-useSeoMeta({
-  title: "平穩呼吸法 | 健康生活 OFFWORK APP",
-  ogTitle: "平穩呼吸法 | 健康生活 OFFWORK APP",
-});
-
 definePageMeta({
   shell: { scrollable: false, statusBar: "secondary" },
+});
+
+// 依路由參數取得呼吸法；不存在就顯示 404
+const route = useRoute();
+const technique = getBreathingTechnique(route.params.technique);
+if (!technique) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: "找不到這個呼吸法",
+    fatal: true,
+  });
+}
+
+useSeoMeta({
+  title: `${technique.name} | 健康生活 OFFWORK APP`,
+  ogTitle: `${technique.name} | 健康生活 OFFWORK APP`,
 });
 
 // 控制 Buttom Sheets (時間設定) 顯示狀態
 const showTimeSetting = ref(false);
 
-// 你想呼吸多久？（預設 3 分鐘）
-const breathingMinutes = ref("3");
+// 你想呼吸多久？
+const breathingMinutes = ref(DEFAULT_BREATHING_MINUTES);
+
+function selectMinutes(minutes) {
+  breathingMinutes.value = minutes;
+  showTimeSetting.value = false;
+}
 </script>
 
 <template>
@@ -35,14 +51,14 @@ const breathingMinutes = ref("3");
     <div
       class="absolute bottom-[255px] left-0 z-10 h-[200px] w-full bg-gradient-to-t from-secondary to-[#5AB3D200] sm:bottom-[279px]"
     ></div>
-    <!-- 平穩呼吸法介紹&時間設定 -->
+    <!-- 呼吸法介紹&時間設定 -->
     <div
       class="absolute bottom-0 left-1/2 z-20 w-full -translate-x-1/2 rounded-t-[32px] bg-neutral-950 px-8 pt-8 sm:rounded-b-[50px]"
     >
       <div class="mb-5">
-        <h1 class="mb-2 text-h5 font-bold text-white">平穩呼吸法</h1>
+        <h1 class="mb-2 text-h5 font-bold text-white">{{ technique.name }}</h1>
         <p class="text-sm text-neutral-300">
-          這個呼吸法可以幫助你降低心跳與緊張感，讓身體慢慢鬆下來，穩定情緒、幫助你從混亂中重新找回節奏。
+          {{ technique.description }}
         </p>
       </div>
       <!-- 你想呼吸多久？（開啟時間設定） -->
@@ -60,7 +76,7 @@ const breathingMinutes = ref("3");
       <!-- 開始按鈕 -->
       <NuxtLink
         :to="{
-          path: '/find-peace/calm-breathe/breathing',
+          path: `/find-peace/${technique.id}/breathing`,
           query: { minutes: breathingMinutes },
         }"
         class="flex w-full items-center justify-center gap-1 rounded-full bg-alert-success py-3 text-center text-md font-bold text-neutral-950"
@@ -80,64 +96,15 @@ const breathingMinutes = ref("3");
   >
     <ul class="text-center text-white">
       <li
+        v-for="minutes in BREATHING_MINUTE_OPTIONS"
+        :key="minutes"
         class="cursor-pointer rounded-xl py-4 text-md font-bold transition hover:text-alert-success"
         :class="{
-          'bg-neutral-900 text-alert-success': breathingMinutes === '1',
+          'bg-neutral-900 text-alert-success': breathingMinutes === minutes,
         }"
-        @click="
-          breathingMinutes = '1';
-          showTimeSetting = false;
-        "
+        @click="selectMinutes(minutes)"
       >
-        1 分鐘
-      </li>
-      <li
-        class="cursor-pointer rounded-xl py-4 text-md font-bold transition hover:text-alert-success"
-        :class="{
-          'bg-neutral-900 text-alert-success': breathingMinutes === '3',
-        }"
-        @click="
-          breathingMinutes = '3';
-          showTimeSetting = false;
-        "
-      >
-        3 分鐘
-      </li>
-      <li
-        class="cursor-pointer rounded-xl py-4 text-md font-bold transition hover:text-alert-success"
-        :class="{
-          'bg-neutral-900 text-alert-success': breathingMinutes === '5',
-        }"
-        @click="
-          breathingMinutes = '5';
-          showTimeSetting = false;
-        "
-      >
-        5 分鐘
-      </li>
-      <li
-        class="cursor-pointer rounded-xl py-4 text-md font-bold transition hover:text-alert-success"
-        :class="{
-          'bg-neutral-900 text-alert-success': breathingMinutes === '10',
-        }"
-        @click="
-          breathingMinutes = '10';
-          showTimeSetting = false;
-        "
-      >
-        10 分鐘
-      </li>
-      <li
-        class="cursor-pointer rounded-xl py-4 text-md font-bold transition hover:text-alert-success"
-        :class="{
-          'bg-neutral-900 text-alert-success': breathingMinutes === '15',
-        }"
-        @click="
-          breathingMinutes = '15';
-          showTimeSetting = false;
-        "
-      >
-        15 分鐘
+        {{ minutes }} 分鐘
       </li>
     </ul>
   </LayoutBottomSheet>

@@ -1,164 +1,78 @@
 <script setup>
-/* ──────────────────────────────────────────────
- * 基本：路由、SEO
- * ────────────────────────────────────────────── */
-useSeoMeta({
-  title: "平穩呼吸法呼吸中 | 健康生活 OFFWORK APP",
-  ogTitle: "平穩呼吸法呼吸中 | 健康生活 OFFWORK APP",
-});
-
 definePageMeta({
   shell: { scrollable: false, statusBar: "transparent" },
 });
 
+/* ──────────────────────────────────────────────
+ * 基本：路由、呼吸法、SEO
+ * ────────────────────────────────────────────── */
 const route = useRoute();
 const router = useRouter();
 
+// 依路由參數取得呼吸法；不存在就顯示 404
+const technique = getBreathingTechnique(route.params.technique);
+if (!technique) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: "找不到這個呼吸法",
+    fatal: true,
+  });
+}
+
+useSeoMeta({
+  title: `${technique.name}呼吸中 | 健康生活 OFFWORK APP`,
+  ogTitle: `${technique.name}呼吸中 | 健康生活 OFFWORK APP`,
+});
+
 /* ──────────────────────────────────────────────
- * ② UI 互動（行為層）：模擬 group-hover，點下畫面顯示標題、操作按鈕
+ * UI 互動（行為層）：模擬 group-hover，點下畫面顯示標題、操作按鈕
  * ────────────────────────────────────────────── */
 const isGroupHover = ref(false);
 
 /* ──────────────────────────────────────────────
- * 呼吸分鐘數（query）
+ * 呼吸分鐘數（query；無效時 fallback 預設分鐘數）
  * ────────────────────────────────────────────── */
-const breathingMinutes = Number(route.query.minutes);
+const queryMinutes = Number(route.query.minutes);
+const breathingMinutes =
+  Number.isFinite(queryMinutes) && queryMinutes >= 1
+    ? Math.floor(queryMinutes)
+    : DEFAULT_BREATHING_MINUTES;
 
 /* ──────────────────────────────────────────────
- * 呼吸狀態：吸/吐切換（跟著 CSS 動畫節拍）
- *  - 以 .breathing-bar 的 animationiteration 作為節拍來源
+ * 呼吸練習：倒數、吸／憋／吐階段、暫停、時長紀錄
+ *  - 倒數歸零後導向 /?openFeelingCalm
  * ────────────────────────────────────────────── */
-const isBreathingIn = ref(false);
-const breathingBarRef = ref(null);
-const volcanoRef = ref(null);
-const circleRef = ref(null);
-
-let animSec = 0; // 白色條動畫的實際秒數
-
-function setPhaseFromElapsed(elapsedSec) {
-  if (!animSec) return;
-  const iter = Math.floor(elapsedSec / animSec); // 已完成的迭代數
-  const forward = iter % 2 === 0;
-  isBreathingIn.value = !forward;
-}
-
-const onAnimStart = (e) => {
-  // 開始或重新開始時，重讀一次動畫秒數
-  const bar = breathingBarRef.value;
-  if (bar) {
-    const cs = getComputedStyle(bar);
-    const durStr = (cs.animationDuration || "0s").split(",")[0].trim();
-    animSec = durStr.endsWith("ms")
-      ? parseFloat(durStr) / 1000
-      : parseFloat(durStr) || 0;
-  }
-  setPhaseFromElapsed(e.elapsedTime);
-};
-
-const onAnimIter = (e) => {
-  setPhaseFromElapsed(e.elapsedTime);
-};
-
-/* ──────────────────────────────────────────────
- * 倒數邏輯：MM:SS 顯示 + 歸零後導向 /?openFeelingCalm
- * ────────────────────────────────────────────── */
-const displayTime = ref("00:00");
-const remainingSec = ref(0);
-let countdownTimer = null;
+const {
+  remainingSec,
+  phase,
+  phaseIndex,
+  phaseRemainingSec,
+  transitionSec,
+  isLungsFull,
+  isPaused,
+  start: startSession,
+  togglePause,
+  stop: stopSession,
+} = useBreathingSession(technique, breathingMinutes * 60, () => {
+  router.replace("/?openFeelingCalm");
+});
 
 // 格式化 MM:SS（分鐘至少 2 位）
-function fmt(sec) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  const mm = String(m).padStart(2, "0");
-  const ss = String(s).padStart(2, "0");
+const displayTime = computed(() => {
+  const mm = String(Math.floor(remainingSec.value / 60)).padStart(2, "0");
+  const ss = String(remainingSec.value % 60).padStart(2, "0");
   return `${mm}:${ss}`;
-}
+});
 
-// 啟動倒數（避免重複啟動）
-function startCountdown() {
-  if (countdownTimer) return;
-  countdownTimer = setInterval(() => {
-    if (remainingSec.value > 0) {
-      remainingSec.value -= 1;
-      displayTime.value = fmt(remainingSec.value);
-    }
-    if (remainingSec.value <= 0) {
-      clearInterval(countdownTimer);
-      countdownTimer = null;
-      // 導頁前先把呼吸時長寫入
-      stopBreathingElapsed();
-      router.replace("/?openFeelingCalm");
-    }
-  }, 1000);
-}
-
-// 停止倒數
-function stopCountdown() {
-  if (countdownTimer) {
-    clearInterval(countdownTimer);
-    countdownTimer = null;
-  }
-}
-
-/* ──────────────────────────────────────────────
- * 暫停/繼續：動畫歸零 + 從頭播放、倒數停/啟
- * ────────────────────────────────────────────── */
-const isPaused = ref(false);
-
-// 把三個動畫元素「歸零並停住」
-function snapAnimationsToStart() {
-  const v = volcanoRef.value;
-  const c = circleRef.value;
-  const b = breathingBarRef.value;
-  [v, c, b].forEach((el) => {
-    if (!el) return;
-    el.style.animation = "none";
-  });
-  if (v) v.style.bottom = "102px";
-  if (c) c.style.transform = "translateX(-50%) scale(1)";
-  if (b) b.style.width = "24px";
-}
-
-// 清除暫停時的 inline style，讓動畫從頭重新播放
-function restartAnimationsFromBeginning() {
-  const v = volcanoRef.value;
-  const c = circleRef.value;
-  const b = breathingBarRef.value;
-  [v, c, b].forEach((el) => {
-    if (!el) return;
-    const h = el;
-    h.style.removeProperty("animation");
-    h.style.removeProperty("bottom");
-    h.style.removeProperty("transform");
-    h.style.removeProperty("width");
-    void h.offsetWidth; // 強制 reflow
-  });
-}
-
-function togglePause() {
-  isPaused.value = !isPaused.value;
-  if (isPaused.value) {
-    // 暫停：倒數停住、動畫歸零並停住、狀態回吸氣
-    stopCountdown();
-    isBreathingIn.value = false;
-    snapAnimationsToStart();
-    // 呼吸時長：暫停
-    pauseBreathingElapsed();
-  } else {
-    // 繼續：動畫從頭開始、倒數繼續
-    restartAnimationsFromBeginning();
-    startCountdown();
-    // 呼吸時長：恢復
-    startBreathingElapsed();
-  }
-}
+const phaseLabel = computed(() => BREATH_PHASE_LABELS[phase.value.type]);
 
 // 遮罩中心的偏移（相對於畫面中央 50%/50%）
 const revealOffsetX = ref("0px"); // 例：'16px' 或 '2vw'
 const revealOffsetY = ref("0px"); // 例：'24px' 或 '10vh'
 
-// 前置倒數（3 → 2 → 1 → 揭露 → 開始）
+/* ──────────────────────────────────────────────
+ * 前置倒數（3 → 2 → 1 → 揭露 → 開始）
+ * ────────────────────────────────────────────── */
 const showReveal = ref(true); // 是否顯示遮罩＋文案
 const preSec = ref(3); // 倒數數字
 const expandMask = ref(false); // 最後 1 秒啟動擴張動畫
@@ -172,9 +86,6 @@ function startPreRoll() {
   preSec.value = 3;
   expandMask.value = false;
   showReveal.value = true;
-
-  // 主畫面動畫停在第一幀
-  snapAnimationsToStart();
 
   preTimer = setInterval(() => {
     preSec.value -= 1;
@@ -192,66 +103,9 @@ function startPreRoll() {
       preSec.value = 0; // 夾住，避免負數閃爍
       showReveal.value = false;
 
-      // 開始呼吸計時：先清零、立刻開始
-      breathingAccumSec.value = 0;
-      if (import.meta.client)
-        sessionStorage.setItem("breathingTimeElapsed", "0");
-      startBreathingElapsed();
-
-      // 從頭啟動主動畫、開始分鐘數倒數
-      restartAnimationsFromBeginning();
-      startCountdown();
+      startSession();
     }
   }, 1000);
-}
-
-// ──────────────────────────────────────────────
-// 呼吸時長記錄：breathingTimeElapsed（秒）
-//  - 倒數結束才開始計時
-//  - 暫停時停表、恢復時續算
-//  - 每秒寫入 sessionStorage，unmount 前、導頁前再補寫一次
-// ──────────────────────────────────────────────
-const breathingAccumSec = ref(0); // 已累積的秒數（含多次暫停/恢復）
-const breathingStartMs = ref(null); // 目前這一段開始的時間戳（ms）
-let breathingTimer = null; // setInterval id
-
-function writeBreathingElapsed() {
-  if (!import.meta.client) return;
-  const extra = breathingStartMs.value
-    ? Math.max(0, Math.floor((Date.now() - breathingStartMs.value) / 1000))
-    : 0;
-  const total = Math.max(0, breathingAccumSec.value + extra);
-  sessionStorage.setItem("breathingTimeElapsed", String(total));
-}
-
-function startBreathingElapsed() {
-  if (!import.meta.client) return;
-  if (breathingStartMs.value !== null) return; // 已在跑
-  breathingStartMs.value = Date.now();
-  if (!breathingTimer) {
-    breathingTimer = setInterval(writeBreathingElapsed, 1000);
-  }
-}
-
-function pauseBreathingElapsed() {
-  // 暫停用：把目前區間累加進去、停表但不清 interval（由 stop 控）
-  if (breathingStartMs.value !== null) {
-    breathingAccumSec.value += Math.max(
-      0,
-      Math.floor((Date.now() - breathingStartMs.value) / 1000),
-    );
-    breathingStartMs.value = null;
-  }
-  writeBreathingElapsed();
-}
-
-function stopBreathingElapsed() {
-  // 結束用：累加 + 最後寫入 + 清 interval
-  pauseBreathingElapsed();
-  if (breathingTimer) {
-    clearInterval(breathingTimer);
-    breathingTimer = null;
-  }
 }
 
 /* ──────────────────────────────────────────────
@@ -261,46 +115,21 @@ onMounted(() => {
   if (!import.meta.client) return;
   // 設定已放鬆
   sessionStorage.setItem("isRelieved", "true");
-
-  // 綁定動畫事件：跟著節拍切換吸/吐
-  const bar = breathingBarRef.value;
-  if (bar) {
-    bar.addEventListener("animationiteration", onAnimIter);
-    bar.addEventListener("animationstart", onAnimStart);
-  }
-
-  // 初始化倒數（無效 minutes fallback 3 分）
-  const mins =
-    Number.isFinite(breathingMinutes) && breathingMinutes > 0
-      ? Math.floor(breathingMinutes)
-      : 3;
-  remainingSec.value = mins * 60;
-  displayTime.value = fmt(remainingSec.value);
   startPreRoll();
 });
 
 onUnmounted(() => {
-  // 停止倒數
-  stopCountdown();
-  // 動畫事件
-  const bar = breathingBarRef.value;
-  if (bar) {
-    bar.removeEventListener("animationiteration", onAnimIter);
-    bar.removeEventListener("animationstart", onAnimStart);
-  }
   if (preTimer) {
     clearInterval(preTimer);
     preTimer = null;
   }
-  // 最後收斂一次呼吸時長
-  stopBreathingElapsed();
 });
 </script>
 
 <template>
   <!-- 倒數時顯示的呼吸法標題，會隨著 expandMask 淡出 -->
   <NuxtLink
-    to="/find-peace/calm-breathe"
+    :to="`/find-peace/${technique.id}`"
     class="absolute top-0 z-20 block w-full py-2.5 text-center text-xl font-bold text-white transition duration-1000 sm:top-14"
     :class="{ 'pointer-events-none opacity-0': expandMask }"
   >
@@ -310,7 +139,7 @@ onUnmounted(() => {
     >
       <img src="/icons/white-left-arrow.svg" alt="返回箭頭" />
     </button>
-    平穩呼吸法
+    {{ technique.name }}
   </NuxtLink>
   <!-- 一開始的倒數、mask 動畫 -->
   <div
@@ -337,18 +166,22 @@ onUnmounted(() => {
   >
     {{ preSec }}
   </p>
-  <!-- 呼吸中內容 -->
+  <!-- 呼吸中內容（--breath-duration：目前階段的動畫秒數，由子元素的 transition 讀取） -->
   <section
     class="content-origin h-full transform-gpu bg-secondary transition-transform duration-500 ease-[cubic-bezier(0.6,0,0.4,1)] sm:-mt-14 sm:pt-14"
     :class="[expandMask ? 'scale-100' : 'scale-[0.7]']"
-    :style="{ '--dx': revealOffsetX, '--dy': revealOffsetY }"
+    :style="{
+      '--dx': revealOffsetX,
+      '--dy': revealOffsetY,
+      '--breath-duration': `${transitionSec}s`,
+    }"
     @click.self="isGroupHover = !isGroupHover"
   >
     <h1
       class="pointer-events-none relative z-10 mb-6 py-2.5 text-center text-xl font-bold text-white opacity-0 transition"
       :class="{ 'opacity-100': isGroupHover }"
     >
-      平穩呼吸法
+      {{ technique.name }}
     </h1>
     <!-- 倒數分鐘數 -->
     <p
@@ -359,16 +192,18 @@ onUnmounted(() => {
     <main>
       <!-- 呼吸火山君 -->
       <img
-        ref="volcanoRef"
         src="/images/find-peace/calm-breathe/breathing-green-volcano.webp"
         alt="呼吸綠色火山君"
-        class="volcano-animation | pointer-events-none absolute bottom-[102px] left-1/2 z-10 w-full max-w-[391px] -translate-x-1/2"
+        class="breathing-volcano | pointer-events-none absolute bottom-[102px] left-1/2 z-10 w-full max-w-[391px] -translate-x-1/2"
+        :class="{ 'is-full': isLungsFull }"
       />
       <!-- 背景呼吸圓圈 -->
       <div
-        ref="circleRef"
-        class="breathing-circle | pointer-events-none absolute bottom-[290px] left-1/2 z-0 rounded-full bg-secondary-300 transition-all duration-500 ease-[cubic-bezier(0.6,0,0.4,1)]"
-        :class="expandMask ? 'size-[231px]' : 'size-0'"
+        class="breathing-circle | pointer-events-none absolute bottom-[290px] left-1/2 z-0 rounded-full bg-secondary-300"
+        :class="[
+          expandMask ? 'size-[231px]' : 'size-0',
+          { 'is-full': isLungsFull },
+        ]"
       ></div>
       <!-- 漸層色塊容器 -->
       <div
@@ -382,14 +217,22 @@ onUnmounted(() => {
           <!-- 吸氣吐氣 -->
           <div class="mb-6 h-6 rounded-full bg-white/20">
             <div
-              ref="breathingBarRef"
               class="breathing-bar | mx-auto h-6 rounded-full bg-white"
+              :class="{ 'is-full': isLungsFull }"
             ></div>
           </div>
           <h2 class="text-h4 font-bold text-white">
             <Transition name="breath-label" mode="out-in">
-              <span :key="isBreathingIn ? 'out' : 'in'">
-                {{ isBreathingIn ? "吐氣" : "吸氣" }}
+              <span :key="phaseIndex">
+                {{ phaseLabel }}
+                <!-- 該階段剩餘秒數（有憋氣或吸吐不等長的呼吸法才顯示）。
+                     放在同一個過渡元素內，換階段時文字與秒數才會一起切換 -->
+                <span
+                  v-if="technique.showPhaseSeconds"
+                  class="ml-1 inline-block min-w-[1ch] tabular-nums text-white/70"
+                >
+                  {{ phaseRemainingSec }}
+                </span>
               </span>
             </Transition>
           </h2>
@@ -421,7 +264,7 @@ onUnmounted(() => {
             </button>
           </div>
           <!-- 停止（直接結束並回到首頁） -->
-          <NuxtLink to="/?openFeelingCalm" @click="stopBreathingElapsed()">
+          <NuxtLink to="/?openFeelingCalm" @click="stopSession()">
             <img
               src="/icons/find-peace/calm-breathe/stop.svg"
               alt="停止 icon"
@@ -495,50 +338,38 @@ onUnmounted(() => {
   transform: translate(-50%, 550px); /* 僅作離場位移，不影響定位邏輯 */
 }
 
+/* ===== 呼吸動畫 =====
+   三個元素都只有「吐完」與「吸飽（.is-full）」兩種狀態，
+   吸氣 / 吐氣時在兩者之間過渡，過渡秒數由 --breath-duration 決定；
+   憋氣、暫停、尚未開始時秒數為 0，畫面停在原地。 */
+
 /* 火山君 */
-.volcano-animation {
-  animation: volcano-animation 2s infinite alternate
-    cubic-bezier(0.6, 0, 0.4, 1);
+.breathing-volcano {
+  transition: bottom var(--breath-duration, 0s) cubic-bezier(0.6, 0, 0.4, 1);
+}
+.breathing-volcano.is-full {
+  bottom: 85px;
 }
 
-/* 背景呼吸圓圈 */
+/* 背景呼吸圓圈（寬高的過渡是進場時圓圈長出來的效果） */
 .breathing-circle {
-  animation: breathing-circle 2s infinite alternate cubic-bezier(0.6, 0, 0.4, 1);
+  transform: translateX(-50%) scale(1);
+  transition:
+    width 0.5s cubic-bezier(0.6, 0, 0.4, 1),
+    height 0.5s cubic-bezier(0.6, 0, 0.4, 1),
+    transform var(--breath-duration, 0s) cubic-bezier(0.6, 0, 0.4, 1);
+}
+.breathing-circle.is-full {
+  transform: translateX(-50%) scale(5);
 }
 
 /* 吸氣吐氣白色條 */
 .breathing-bar {
-  animation: breathing-bar 2s infinite alternate cubic-bezier(0.6, 0, 0.4, 1);
+  width: 24px;
+  transition: width var(--breath-duration, 0s) cubic-bezier(0.6, 0, 0.4, 1);
 }
-
-/* 火山君動畫 */
-@keyframes volcano-animation {
-  from {
-    bottom: 102px;
-  }
-  to {
-    bottom: 85px;
-  }
-}
-
-/* 背景呼吸圓圈動畫 */
-@keyframes breathing-circle {
-  from {
-    transform: translateX(-50%) scale(1);
-  }
-  to {
-    transform: translateX(-50%) scale(5);
-  }
-}
-
-/* 吸氣吐氣白色條動畫 */
-@keyframes breathing-bar {
-  from {
-    width: 24px;
-  }
-  to {
-    width: 100%;
-  }
+.breathing-bar.is-full {
+  width: 100%;
 }
 
 /* 吸/吐文字過渡 */
