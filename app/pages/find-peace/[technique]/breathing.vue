@@ -9,13 +9,13 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 
-// 依路由參數取得呼吸法；不存在就顯示 404
+// 依路由參數取得呼吸法；不存在就顯示 404（fatal 的說明見同資料夾 index.vue）
 const technique = getBreathingTechnique(route.params.technique);
 if (!technique) {
   throw createError({
     statusCode: 404,
-    statusMessage: "找不到這個呼吸法",
-    fatal: true,
+    statusMessage: "Page Not Found",
+    fatal: import.meta.client,
   });
 }
 

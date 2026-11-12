@@ -3,14 +3,16 @@ definePageMeta({
   shell: { scrollable: false, statusBar: "secondary" },
 });
 
-// 依路由參數取得呼吸法；不存在就顯示 404
+// 依路由參數取得呼吸法；不存在就顯示 404。
+// fatal 只在瀏覽器端需要（站內導覽時才會顯示整頁錯誤）；伺服器端本來就會回
+// 404 頁，設了 fatal 反而會被記成 request error
 const route = useRoute();
 const technique = getBreathingTechnique(route.params.technique);
 if (!technique) {
   throw createError({
     statusCode: 404,
-    statusMessage: "找不到這個呼吸法",
-    fatal: true,
+    statusMessage: "Page Not Found",
+    fatal: import.meta.client,
   });
 }
 
