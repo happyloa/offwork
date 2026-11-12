@@ -5,6 +5,15 @@ export default defineNuxtConfig({
   tailwindcss: {
     cssPath: "~/assets/css/tailwind.css",
   },
+  // Nuxt 4.6 起以 ESM 規則解析 PostCSS 外掛，@nuxtjs/tailwindcss 自動加入的
+  // 目錄形式 `tailwindcss/nesting` 無法被載入（會被略過並出現 NUXT_B7027 警告），
+  // 因此關閉該項，改用明確的檔案路徑載入同一個外掛（需排在 tailwindcss 之前）
+  postcss: {
+    plugins: {
+      "tailwindcss/nesting": false,
+      "tailwindcss/nesting/index.js": {},
+    },
+  },
   app: {
     head: {
       title: "健康生活 OFFWORK APP",
