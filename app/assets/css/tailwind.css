@@ -9,6 +9,8 @@
       content: "";
       position: absolute;
       inset: 0;
+      /* 這層只是畫邊框，但它蓋在整張卡片上；不擋住點擊，卡片裡的按鈕才點得到 */
+      pointer-events: none;
       padding: 1px; /* 邊框寬度 */
       background: linear-gradient(
         95.38deg,
