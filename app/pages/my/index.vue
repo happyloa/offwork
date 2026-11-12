@@ -14,6 +14,22 @@ const haveData = computed(() => todaySummary.value.hasPractice);
 // 呼吸目標：「目標」頁設定的呼吸時長
 const breathingTargetMinutes = ref(DEFAULT_BREATHING_MINUTES);
 
+// 睡眠目標：「目標」頁設定的睡眠時長（小時）。
+// 睡眠還沒有紀錄功能，今天的睡眠時數是示意資料，只有「是否達標」會跟著目標變
+const sleepTargetHours = ref(sleepTargetInHours(DEFAULT_SLEEP_TARGET));
+const DEMO_SLEEP_HOURS = 6.5;
+const sleepButton = computed(() => {
+  const isReached = DEMO_SLEEP_HOURS >= sleepTargetHours.value;
+  return {
+    title: "睡眠",
+    data: String(DEMO_SLEEP_HOURS),
+    unit: "時",
+    color: isReached ? "text-alert-success" : "text-accent",
+    url: "/analysis",
+    isUpStandard: isReached,
+  };
+});
+
 // 大吼：超過每日上限時沿用設計稿的「5 次以上」寫法
 const yellingButton = computed(() => {
   const count = todaySummary.value.yellingCount;
@@ -55,6 +71,7 @@ onMounted(() => {
   observer = createObserver();
   observer.observe(nav.value);
   breathingTargetMinutes.value = readBreathingTargetMinutes();
+  sleepTargetHours.value = sleepTargetInHours(readSleepTarget());
 });
 onUnmounted(() => {
   observer.disconnect();
@@ -147,16 +164,7 @@ onUnmounted(() => {
             }"
           />
           <CardButton :cardButton="breathingButton" />
-          <CardButton
-            :cardButton="{
-              title: '睡眠',
-              data: '6.5',
-              unit: '時',
-              color: 'text-accent',
-              url: '/analysis',
-              isUpStandard: false,
-            }"
-          />
+          <CardButton :cardButton="sleepButton" />
         </div>
       </section>
       <button
@@ -205,7 +213,7 @@ onUnmounted(() => {
           <CardButton
             :cardButton="{
               title: '睡眠',
-              data: '8',
+              data: String(sleepTargetHours),
               unit: '時',
               color: 'text-alert-success',
               url: '/my/target/sleep',

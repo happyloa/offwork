@@ -1,9 +1,16 @@
 <script setup>
 const isOpen = ref(false);
-const currentMin = ref(0);
-const currentHour = ref(8);
+// 睡眠時長：存在 localStorage，「我的」頁面的睡眠目標也讀同一份
+const currentMin = ref(DEFAULT_SLEEP_TARGET.minutes);
+const currentHour = ref(DEFAULT_SLEEP_TARGET.hours);
 const tempMin = ref(0);
 const tempHour = ref(0);
+
+onMounted(() => {
+  const saved = readSleepTarget();
+  currentHour.value = saved.hours;
+  currentMin.value = saved.minutes;
+});
 
 // 定位時間bar
 const anchor = async () => {
@@ -17,6 +24,7 @@ const cancleHandler = () => {
 const submitHandler = () => {
   currentHour.value = tempHour.value;
   currentMin.value = tempMin.value;
+  saveSleepTarget({ hours: tempHour.value, minutes: tempMin.value });
   isOpen.value = false;
 };
 
