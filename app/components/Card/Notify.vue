@@ -44,6 +44,11 @@ const daysList = ref({
     value: "sat",
   },
 });
+// 12 小時制沒有 0 點：時間選擇器的 0 代表 12 點
+const timeText = computed(() => {
+  const hour = Number(notify.hour) === 0 ? 12 : notify.hour;
+  return `${hour.toString().padStart(2, "0")}:${notify.min.toString().padStart(2, "0")}`;
+});
 const openDetail = () => {
   notify.isOpenDetail = !notify.isOpenDetail;
 };
@@ -110,9 +115,7 @@ const switchType = (type) => {
             @click="() => $emit('openTimeModal', notify.id)"
           >
             <h2 class="text-h5 font-medium">
-              {{
-                `${notify.hour.toString().padStart(2, "0")}:${notify.min.toString().padStart(2, "0")}`
-              }}
+              {{ timeText }}
             </h2>
             <span class="mb-[3px] block h-fit text-xs font-normal">{{
               `${notify.isMorning ? "上午" : "下午"}`

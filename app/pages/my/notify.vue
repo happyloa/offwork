@@ -27,9 +27,14 @@ const nofityList = ref([
 
 // 路由
 const router = useRouter();
-// 因為睡眠目標和呼吸目標，所以直接使用上一頁
+// 因為睡眠目標和呼吸目標，所以直接使用上一頁。
+// 直接開啟這一頁（重新整理、貼網址）時站內沒有上一頁，改回「我的」，才不會跳出網站
 const goBack = () => {
-  router.back();
+  if (window.history.state?.back) {
+    router.back();
+  } else {
+    router.replace("/my");
+  }
 };
 
 // 刪除通知
@@ -73,12 +78,10 @@ const switchNotify = (state, id = tempId) => {
 const handleNotifyModal = (id) => {
   tempId = id;
   notifyModal.value = true;
-  document.body.classList.add("overflow-hidden");
 };
 const closeNotifyModal = () => {
   tempId = null;
   notifyModal.value = false;
-  document.body.classList.remove("overflow-hidden");
 };
 
 // 時間bar相關
@@ -168,7 +171,7 @@ useSeoMeta({
         v-for="notify in nofityList"
         :key="notify.id"
         :notify="notify"
-        @open-notify-modal="(id) => handleNotifyModal(id, state)"
+        @open-notify-modal="(id) => handleNotifyModal(id)"
         @switch-notify="(id, state) => switchNotify(id, state)"
         @open-time-modal="(id) => anchor(id)"
         @delete-notify="(id) => deleteNotify(id)"
@@ -217,6 +220,7 @@ useSeoMeta({
               scrollStyle="text-[#B2B2B2] mr-[40px] font-normal"
               item-style="min-h-[35px] text-end"
               :is-number-format="false"
+              zero-label="12"
               :is-rotate="true"
               @change-value="
                 (newValue) => {
@@ -273,38 +277,37 @@ useSeoMeta({
       </LayoutBottomSheet>
     </div>
   </main>
-  <!-- 通知開啟視窗 -->
-  <div
-    :class="`fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 bg-neutral-950 px-4 py-5 ${notifyModal ? 'opacity-100' : 'pointer-events-none opacity-0'} min-w-[343px] rounded-2xl transition-all duration-300`"
+  <!-- 通知開啟視窗：用共用的 Modal 掛在 App 畫面內，
+       桌面預覽時遮罩才不會蓋到手機框外面；點遮罩會關閉視窗，不改變開關狀態 -->
+  <CommonModal
+    :show="notifyModal"
+    @update:show="(show) => !show && closeNotifyModal()"
   >
-    <div class="mb-3">
-      <h2 class="mb-2 text-center text-md font-medium text-white">
-        要允許 Offwork 傳送通知嗎?
-      </h2>
-      <p class="text-center text-sm text-neutral-300">
-        通知可包含提示、聲音和圖像標記
-      </p>
+    <div class="min-w-[343px] rounded-2xl bg-neutral-950 px-4 py-5">
+      <div class="mb-3">
+        <h2 class="mb-2 text-center text-md font-medium text-white">
+          要允許 Offwork 傳送通知嗎?
+        </h2>
+        <p class="text-center text-sm text-neutral-300">
+          通知可包含提示、聲音和圖像標記
+        </p>
+      </div>
+      <div class="mb-3 flex flex-col text-md font-bold text-neutral-950">
+        <button
+          @click="() => switchNotify(true)"
+          class="mb-2 w-full rounded-[100px] bg-primary px-6 py-3"
+        >
+          允許
+        </button>
+        <button
+          @click="() => switchNotify(false)"
+          class="mb-2 w-full rounded-[100px] bg-white px-6 py-3"
+        >
+          現在不要
+        </button>
+      </div>
     </div>
-    <div class="mb-3 flex flex-col text-md font-bold text-neutral-950">
-      <button
-        @click="() => switchNotify(true)"
-        class="mb-2 w-full rounded-[100px] bg-primary px-6 py-3"
-      >
-        允許
-      </button>
-      <button
-        @click="() => switchNotify(false)"
-        class="mb-2 w-full rounded-[100px] bg-white px-6 py-3"
-      >
-        現在不要
-      </button>
-    </div>
-  </div>
-  <!-- 背景遮罩 -->
-  <div
-    v-if="notifyModal"
-    className="fixed inset-0 z-40 bg-[#161616] opacity-60"
-  ></div>
+  </CommonModal>
 </template>
 <style scoped>
 .gradient-background {
