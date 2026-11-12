@@ -57,38 +57,6 @@ watch(showCeremonyNav, (open) => {
   }
 });
 
-// UI → URL（舒服點了嗎？）
-watch(showFeelingBetter, (open) => {
-  if (!import.meta.client) return;
-  const q = { ...route.query };
-  if (open) {
-    if (!("openFeelingBetter" in q)) {
-      router.replace({ query: { ...q, openFeelingBetter: "true" } });
-    }
-  } else {
-    if ("openFeelingBetter" in q) {
-      delete q.openFeelingBetter;
-      router.replace({ query: q });
-    }
-  }
-});
-
-// UI → URL（平靜點了嗎？）
-watch(showFeelingCalm, (open) => {
-  if (!import.meta.client) return;
-  const q = { ...route.query };
-  if (open) {
-    if (!("openFeelingCalm" in q)) {
-      router.replace({ query: { ...q, openFeelingCalm: "true" } });
-    }
-  } else {
-    if ("openFeelingCalm" in q) {
-      delete q.openFeelingCalm;
-      router.replace({ query: q });
-    }
-  }
-});
-
 // 大吼經過秒數（讀取 sessionStorage）
 const yellingElapsedSec = ref(0);
 const yellingMin = computed(() => Math.floor(yellingElapsedSec.value / 60));
@@ -129,7 +97,7 @@ onMounted(() => {
   readBreathingElapsed();
 });
 
-// 當「舒服點了嗎？」打開時再讀一次，確保顯示最新值
+// UI → URL（舒服點了嗎？）；打開時再讀一次，確保顯示最新值
 watch(showFeelingBetter, (open) => {
   if (!import.meta.client) return;
   const q = { ...route.query };
@@ -146,7 +114,7 @@ watch(showFeelingBetter, (open) => {
   }
 });
 
-// 打開「平靜點了嗎？」當下再讀一次，確保是最新
+// UI → URL（平靜點了嗎？）；打開當下再讀一次，確保是最新
 watch(showFeelingCalm, (open) => {
   if (!import.meta.client) return;
   const q = { ...route.query };

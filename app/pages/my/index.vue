@@ -18,14 +18,12 @@ const createObserver = () => {
 onMounted(() => {
   observer = createObserver();
   observer.observe(nav.value);
-  console.log("建立監聽火山君物件");
   if (import.meta.client) {
     haveData.value = sessionStorage.getItem("isRelieved") == "true";
   }
 });
 onUnmounted(() => {
   observer.disconnect();
-  console.log("卸除火山君物件");
 });
 </script>
 <!-- <div class="w-6"></div>
