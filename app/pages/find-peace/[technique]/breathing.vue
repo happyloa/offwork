@@ -49,6 +49,7 @@ const {
   phaseRemainingSec,
   transitionSec,
   isLungsFull,
+  isRunning,
   isPaused,
   start: startSession,
   togglePause,
@@ -171,7 +172,10 @@ onUnmounted(() => {
   <!-- 呼吸中內容（--breath-duration：目前階段的動畫秒數，由子元素的 transition 讀取） -->
   <section
     class="content-origin h-full transform-gpu bg-secondary transition-transform duration-500 ease-[cubic-bezier(0.6,0,0.4,1)] sm:-mt-14 sm:pt-14"
-    :class="[expandMask ? 'scale-100' : 'scale-[0.7]']"
+    :class="[
+      expandMask ? 'scale-100' : 'scale-[0.7]',
+      { 'is-still': !isRunning },
+    ]"
     :style="{
       '--dx': revealOffsetX,
       '--dy': revealOffsetY,
@@ -381,6 +385,18 @@ onUnmounted(() => {
 }
 .breathing-bar.is-full {
   width: 100%;
+}
+
+/* 沒有在進行（倒數前、暫停、結束）時關掉呼吸動畫的過渡，畫面立刻回到起點並停住。
+   只把秒數設成 0 不夠：吐氣途中暫停時目標狀態沒有變，進行到一半的過渡會繼續跑完 */
+.is-still .breathing-volcano,
+.is-still .breathing-bar {
+  transition: none;
+}
+.is-still .breathing-circle {
+  transition:
+    width 0.5s cubic-bezier(0.6, 0, 0.4, 1),
+    height 0.5s cubic-bezier(0.6, 0, 0.4, 1);
 }
 
 /* 吸/吐文字過渡 */

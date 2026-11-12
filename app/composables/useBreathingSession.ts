@@ -181,6 +181,7 @@ export function useBreathingSession(
     phaseRemainingSec,
     transitionSec,
     isLungsFull,
+    isRunning,
     isPaused,
     start,
     togglePause,
