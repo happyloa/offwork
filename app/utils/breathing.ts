@@ -97,3 +97,30 @@ export function getBreathingTechnique(id: unknown) {
 /** 可選的呼吸時長（分鐘） */
 export const BREATHING_MINUTE_OPTIONS = [1, 3, 5, 10, 15];
 export const DEFAULT_BREATHING_MINUTES = 3;
+
+// 「我的 → 目標 → 呼吸進行時長」，同時是各呼吸法介紹頁的預設時長。
+// 存在 localStorage，只能在瀏覽器端（onMounted 之後）讀寫。
+const TARGET_MINUTES_STORAGE_KEY = "breathingTargetMinutes";
+
+// 瀏覽器封鎖儲存空間（例如某些隱私模式）時 localStorage 會丟例外，
+// 這時退回預設值、不儲存，功能照常運作。
+export function readBreathingTargetMinutes() {
+  if (!import.meta.client) return DEFAULT_BREATHING_MINUTES;
+  try {
+    const saved = Number(localStorage.getItem(TARGET_MINUTES_STORAGE_KEY));
+    return BREATHING_MINUTE_OPTIONS.includes(saved)
+      ? saved
+      : DEFAULT_BREATHING_MINUTES;
+  } catch {
+    return DEFAULT_BREATHING_MINUTES;
+  }
+}
+
+export function saveBreathingTargetMinutes(minutes: number) {
+  if (!import.meta.client) return;
+  try {
+    localStorage.setItem(TARGET_MINUTES_STORAGE_KEY, String(minutes));
+  } catch {
+    // 無法儲存時只影響「記住設定」，不影響當下操作
+  }
+}

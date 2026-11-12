@@ -22,8 +22,11 @@ useSeoMeta({
 // 控制 Buttom Sheets (時間設定) 顯示狀態
 const showTimeSetting = ref(false);
 
-// 你想呼吸多久？
+// 你想呼吸多久？（預設帶入「我的 → 目標」設定的呼吸時長）
 const breathingMinutes = ref(DEFAULT_BREATHING_MINUTES);
+onMounted(() => {
+  breathingMinutes.value = readBreathingTargetMinutes();
+});
 
 function selectMinutes(minutes) {
   breathingMinutes.value = minutes;

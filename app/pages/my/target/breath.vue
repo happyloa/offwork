@@ -1,11 +1,16 @@
 <script setup>
 const isOpen = ref(false);
-const currentMin = ref(3);
-const timeList = [1, 3, 5, 10, 15];
+// 呼吸進行時長：存在 localStorage，並作為各呼吸法介紹頁的預設時長
+const currentMin = ref(DEFAULT_BREATHING_MINUTES);
+const timeList = BREATHING_MINUTE_OPTIONS;
 const changeMin = (min) => {
   currentMin.value = min;
+  saveBreathingTargetMinutes(min);
   isOpen.value = false;
 };
+onMounted(() => {
+  currentMin.value = readBreathingTargetMinutes();
+});
 useSeoMeta({
   title: "我的 | 健康生活 OFFWORK APP",
   ogTitle: "我的 | 健康生活 OFFWORK APP",
