@@ -10,6 +10,16 @@ definePageMeta({
 
 const isYelling = ref(false);
 
+// 麥克風音量：拿得到就顯示即時音量計並記錄最大分貝；
+// 沒有麥克風或使用者沒開權限時，維持原本單純播放動畫的方式
+const {
+  status: micStatus,
+  db: micDb,
+  peakDb: micPeakDb,
+  start: startMic,
+  stop: stopMic,
+} = useMicrophoneLevel();
+
 // 新增：大吼開始時間與計時器
 const yellingStartMs = ref(null);
 let yellingTimer = null;
@@ -34,10 +44,14 @@ const startYelling = () => {
   // 初始化大吼計時
   yellingStartMs.value = Date.now();
   sessionStorage.setItem("yellingTimeElapsed", "0"); // 先清成 0
+  sessionStorage.removeItem("yellingPeakDb");
 
   // 每秒更新一次
   if (yellingTimer) clearInterval(yellingTimer);
   yellingTimer = window.setInterval(writeYellingElapsed, 1000);
+
+  // 要求麥克風權限（瀏覽器規定要在點擊事件內呼叫）
+  startMic();
 };
 
 // 結束大吼：補記時長，並存一筆練習紀錄。
@@ -54,6 +68,13 @@ function finishYelling() {
   hasFinished = true;
 
   writeYellingElapsed();
+
+  // 最大分貝：沒有收到麥克風音量時不記錄，首頁會顯示「--」
+  const hasPeak = micPeakDb.value !== null;
+  const peakDb = hasPeak ? Math.round(micPeakDb.value) : undefined;
+  if (hasPeak) sessionStorage.setItem("yellingPeakDb", String(peakDb));
+  stopMic();
+
   const seconds = Math.floor((Date.now() - yellingStartMs.value) / 1000);
   // 不滿 1 秒不算一次練習
   if (seconds >= 1) {
@@ -61,6 +82,7 @@ function finishYelling() {
       type: "yelling",
       startedAt: yellingStartMs.value,
       seconds,
+      ...(hasPeak && { peakDb }),
     });
   }
 }
@@ -91,7 +113,10 @@ onUnmounted(finishYelling);
       class="absolute bottom-0 left-1/2 z-10 flex w-full -translate-x-1/2 flex-col items-center bg-gradient-to-t from-neutral-950 from-40% to-[#29292D00] pt-8"
     >
       <div class="mb-8 max-w-[259px]">
-        <Lottie name="yelling/volume" />
+        <!-- 拿不到麥克風（沒有裝置、沒開權限、瀏覽器不支援）時播放原本的音量動畫；
+             其餘情況顯示即時音量計，等待授權期間直條全暗，與開始前的畫面一致 -->
+        <Lottie v-if="micStatus === 'unavailable'" name="yelling/volume" />
+        <YellingVolumeMeter v-else :db="micDb" />
       </div>
       <!-- 停止按鈕 -->
       <div class="mb-10 rounded-full border-[11px] border-[#C0C7DC33]">

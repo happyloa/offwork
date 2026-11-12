@@ -66,10 +66,16 @@ const yellingElapsedSec = ref(0);
 const yellingMin = computed(() => Math.floor(yellingElapsedSec.value / 60));
 const yellingSec = computed(() => yellingElapsedSec.value % 60);
 
+// 這次大吼量到的最大分貝；沒有麥克風或沒開權限時沒有數值，顯示「--」
+const yellingPeakDb = ref(null);
+
 function readYellingElapsed() {
   if (!import.meta.client) return;
   const raw = sessionStorage.getItem("yellingTimeElapsed");
   yellingElapsedSec.value = raw ? Math.max(0, parseInt(raw, 10) || 0) : 0;
+
+  const peak = parseInt(sessionStorage.getItem("yellingPeakDb") ?? "", 10);
+  yellingPeakDb.value = Number.isFinite(peak) ? peak : null;
 }
 
 // ──────────────────────────────────────────────
@@ -332,7 +338,8 @@ watch(showFeelingCalm, (open) => {
             <p
               class="flex items-end gap-0.5 text-h5 font-bold text-alert-success"
             >
-              80<span class="pb-0.5 text-xs font-normal">dB</span>
+              {{ yellingPeakDb ?? "--"
+              }}<span class="pb-0.5 text-xs font-normal">dB</span>
             </p>
           </div>
         </article>
