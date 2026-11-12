@@ -22,7 +22,12 @@ const showRight = computed(() => {
       class="absolute left-0 top-1/2 -translate-y-1/2 py-2 pl-4 pr-2"
       aria-label="返回上一頁"
     >
-      <img src="/icons/white-left-arrow.svg" alt="返回 icon" />
+      <img
+        src="/icons/white-left-arrow.svg"
+        width="24"
+        height="24"
+        alt="返回 icon"
+      />
     </NuxtLink>
 
     {{ title }}
@@ -34,7 +39,12 @@ const showRight = computed(() => {
       @click="emit('right')"
       aria-label="右側按鈕動作"
     >
-      <img src="/icons/open-bottom-sheet.svg" alt="開啟 Bottom Sheet" />
+      <img
+        src="/icons/open-bottom-sheet.svg"
+        width="24"
+        height="24"
+        alt="開啟 Bottom Sheet"
+      />
     </button>
   </h1>
 </template>

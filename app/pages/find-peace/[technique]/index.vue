@@ -43,12 +43,14 @@ function selectMinutes(minutes) {
       <img
         src="/icons/white-left-arrow.svg"
         alt="返回箭頭"
-        class="py-2 pl-4 pr-2"
+        class="h-10 w-12 py-2 pl-4 pr-2"
       />
     </NuxtLink>
     <!-- 呼吸火山君 -->
     <img
       src="/images/find-peace/calm-breathe/breathing-green-volcano.webp"
+      width="1125"
+      height="1710"
       alt="呼吸綠色火山君"
       class="pointer-events-none absolute bottom-[260px] left-1/2 z-0 w-full max-w-[344px] -translate-x-1/2 sm:bottom-[284px]"
     />
@@ -75,7 +77,12 @@ function selectMinutes(minutes) {
         你想呼吸多久？
         <span class="flex gap-1 text-alert-success">
           {{ breathingMinutes }} 分鐘
-          <img src="/icons/green-down-arrow.svg" alt="綠色下箭頭 icon" />
+          <img
+            src="/icons/green-down-arrow.svg"
+            width="24"
+            height="24"
+            alt="綠色下箭頭 icon"
+          />
         </span>
       </button>
       <!-- 開始按鈕 -->
@@ -86,7 +93,12 @@ function selectMinutes(minutes) {
         }"
         class="flex w-full items-center justify-center gap-1 rounded-full bg-alert-success py-3 text-center text-md font-bold text-neutral-950"
       >
-        <img src="/icons/play-fill.svg" alt="實心播放 icon" />
+        <img
+          src="/icons/play-fill.svg"
+          width="25"
+          height="24"
+          alt="實心播放 icon"
+        />
         開始
       </NuxtLink>
       <LayoutBottomBar class="mb-2 mt-[27px]" />

@@ -19,12 +19,21 @@ useSeoMeta({
       class="sticky flex items-center justify-between bg-[#29292DCC] px-4 py-3 backdrop-blur sm:top-[56px]"
     >
       <NuxtLink to="/my">
-        <img src="/icons/my/arrow-left-s-line.svg" alt="返回"
+        <img
+          src="/icons/my/arrow-left-s-line.svg"
+          width="24"
+          height="24"
+          alt="返回"
       /></NuxtLink>
 
       <h1 class="text-xl font-bold text-white">目標</h1>
       <button @click="isOpen = true">
-        <img src="/icons/my/arrow-up-down-fill.svg" alt="設定" />
+        <img
+          src="/icons/my/arrow-up-down-fill.svg"
+          width="24"
+          height="24"
+          alt="設定"
+        />
       </button>
     </section>
     <div class="mb-5 px-4 pt-4">
@@ -40,7 +49,12 @@ useSeoMeta({
       <!-- feedback box -->
       <section class="flex gap-2 pb-[2px]">
         <div class="size-20 shrink-0">
-          <img src="/images/home/normal-circle.webp" alt="綠色火山君" />
+          <img
+            src="/images/home/normal-circle.webp"
+            width="240"
+            height="240"
+            alt="綠色火山君"
+          />
         </div>
         <div class="relative rounded-3xl bg-alert-success px-5 py-4">
           <p class="text-sm text-neutral-950">

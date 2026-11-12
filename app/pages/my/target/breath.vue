@@ -31,6 +31,8 @@ useSeoMeta({
         </div>
         <img
           src="/icons/my/arrow-left-s-line.svg"
+          width="24"
+          height="24"
           alt="睡眠"
           class="rotate-180"
         />

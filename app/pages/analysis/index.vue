@@ -79,12 +79,21 @@ const dataCard = computed(() => [
       class="flex items-center justify-between bg-[#29292DCC] px-4 py-[10px] backdrop-blur-lg"
     >
       <NuxtLink to="/analyze">
-        <img src="/icons/my/arrow-left-s-line.svg" alt="返回"
+        <img
+          src="/icons/my/arrow-left-s-line.svg"
+          width="24"
+          height="24"
+          alt="返回"
       /></NuxtLink>
 
       <h1 class="text-xl font-bold text-white">大吼</h1>
       <button @click="isOpen = true">
-        <img src="/icons/my/arrow-up-down-fill.svg" alt="設定" />
+        <img
+          src="/icons/my/arrow-up-down-fill.svg"
+          width="24"
+          height="24"
+          alt="設定"
+        />
       </button>
     </section>
     <!-- 視圖切換 -->

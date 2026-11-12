@@ -59,6 +59,8 @@ definePageMeta({
               <img
                 :src="technique.image"
                 :alt="technique.name"
+                width="360"
+                height="301"
                 class="w-[120px]"
               />
               <div>

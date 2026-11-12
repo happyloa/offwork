@@ -65,7 +65,12 @@ watch(
           </div>
         </div>
         <div v-if="url" class="self-center px-2 py-[6px]">
-          <img src="/icons/white-right-arrow.svg" alt="右箭頭" />
+          <img
+            src="/icons/white-right-arrow.svg"
+            width="8"
+            height="13"
+            alt="右箭頭"
+          />
         </div>
       </div>
       <div :class="['flex', comment ? 'justify-between' : 'justify-center']">

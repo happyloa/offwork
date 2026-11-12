@@ -85,12 +85,19 @@ const switchType = (type) => {
           :class="`flex items-center gap-1 text-sm font-bold text-neutral-100 ${notify.isOpenDetail ? '' : '-translate-x-6'} transition-transform duration-300`"
           @click="isOpen = true"
         >
-          <span><img src="/icons/my/bookmark-fill.svg" alt="編輯" /></span
+          <span
+            ><img
+              src="/icons/my/bookmark-fill.svg"
+              width="20"
+              height="20"
+              alt="編輯" /></span
           >{{ notify.type }}
         </button>
         <button class="z-10 py-[10px]" @click="openDetail">
           <img
             src="/icons/my/arrow-down-s-line.svg"
+            width="24"
+            height="24"
             alt="圖示"
             :class="`size-6 ${notify.isOpenDetail ? 'rotate-180' : ''} transition-all duration-300`"
           />
@@ -164,7 +171,12 @@ const switchType = (type) => {
         class="z-10 flex items-center gap-2 px-2 py-3 text-xs font-bold text-white"
         @click="() => $emit('deleteNotify', notify.id)"
       >
-        <img src="/icons/my/delete-bin-fill.svg" alt="刪除" />
+        <img
+          src="/icons/my/delete-bin-fill.svg"
+          width="20"
+          height="20"
+          alt="刪除"
+        />
         刪除
       </button>
     </div>

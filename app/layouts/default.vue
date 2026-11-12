@@ -178,7 +178,7 @@ const statusBarBgClass = computed(() => {
             >
               <span>{{ currentTime }}</span>
               <img src="/dynamic-island.svg" alt="island" />
-              <img src="/status.svg" alt="status" />
+              <img src="/status.svg" width="126" height="14" alt="status" />
             </div>
             <LayoutHeaderBar
               v-if="hasHeaderMeta"

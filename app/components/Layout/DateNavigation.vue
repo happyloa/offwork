@@ -23,7 +23,13 @@ const handleDateClick = () => {
       aria-label="上一個"
       @click="emits('prev')"
     >
-      <img src="/icons/white-left-arrow.svg" alt="左箭頭" loading="lazy" />
+      <img
+        src="/icons/white-left-arrow.svg"
+        width="24"
+        height="24"
+        alt="左箭頭"
+        loading="lazy"
+      />
     </button>
     <button
       class="rounded-full bg-neutral-900 px-4 py-2 text-center"
@@ -42,11 +48,20 @@ const handleDateClick = () => {
       <img
         v-if="canGoNext"
         src="/icons/white-left-arrow.svg"
+        width="24"
+        height="24"
         alt="右箭頭"
         class="rotate-180"
         loading="lazy"
       />
-      <img v-else src="/icons/right-arrow.svg" alt="右箭頭" loading="lazy" />
+      <img
+        v-else
+        src="/icons/right-arrow.svg"
+        width="24"
+        height="24"
+        alt="右箭頭"
+        loading="lazy"
+      />
     </button>
   </section>
 </template>

@@ -134,7 +134,12 @@ onUnmounted(() => {
       type="button"
       class="absolute left-0 top-1/2 block -translate-y-1/2 py-2 pl-4 pr-2"
     >
-      <img src="/icons/white-left-arrow.svg" alt="返回箭頭" />
+      <img
+        src="/icons/white-left-arrow.svg"
+        width="24"
+        height="24"
+        alt="返回箭頭"
+      />
     </button>
     {{ technique.name }}
   </NuxtLink>
@@ -190,6 +195,8 @@ onUnmounted(() => {
       <!-- 呼吸火山君 -->
       <img
         src="/images/find-peace/calm-breathe/breathing-green-volcano.webp"
+        width="1125"
+        height="1710"
         alt="呼吸綠色火山君"
         class="breathing-volcano | pointer-events-none absolute bottom-[102px] left-1/2 z-10 w-full max-w-[391px] -translate-x-1/2"
         :class="{ 'is-full': isLungsFull }"
@@ -241,7 +248,12 @@ onUnmounted(() => {
             'pointer-events-auto opacity-100': isGroupHover && expandMask,
           }"
         >
-          <img src="/icons/find-peace/calm-breathe/music.svg" alt="音樂開關" />
+          <img
+            src="/icons/find-peace/calm-breathe/music.svg"
+            width="53"
+            height="53"
+            alt="音樂開關"
+          />
           <!-- 暫停按鈕 -->
           <div class="rounded-full border-[11px] border-[#C0C7DC33]">
             <button
@@ -264,6 +276,8 @@ onUnmounted(() => {
           <NuxtLink to="/?openFeelingCalm" @click="stopSession()">
             <img
               src="/icons/find-peace/calm-breathe/stop.svg"
+              width="53"
+              height="53"
               alt="停止 icon"
             />
           </NuxtLink>

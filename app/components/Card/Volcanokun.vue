@@ -14,6 +14,8 @@ defineProps({
         <div class="h-full w-full overflow-hidden rounded-full bg-secondary">
           <img
             src="/images/home/normal-circle.webp"
+            width="240"
+            height="240"
             alt="綠色火山君"
             class="scale-100 object-top"
             loading="lazy"

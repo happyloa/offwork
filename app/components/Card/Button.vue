@@ -42,7 +42,12 @@
         </div>
       </div>
       <div class="justify-end pb-0.5">
-        <img src="/icons/my/arrowRight.svg" class="text-sm font-bold" />
+        <img
+          src="/icons/my/arrowRight.svg"
+          width="17"
+          height="17"
+          class="text-sm font-bold"
+        />
       </div>
     </div>
   </NuxtLink>

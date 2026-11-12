@@ -151,7 +151,12 @@ useSeoMeta({
     <!-- 功能列 -->
     <section class="flex items-center justify-between px-4 py-3">
       <button @click="goBack">
-        <img src="/icons/my/arrow-left-s-line.svg" alt="返回" />
+        <img
+          src="/icons/my/arrow-left-s-line.svg"
+          width="24"
+          height="24"
+          alt="返回"
+        />
       </button>
 
       <h1 class="text-xl font-bold text-white">通知</h1>
@@ -179,6 +184,8 @@ useSeoMeta({
         >
           <img
             src="/icons/my/add-large-fill.svg"
+            width="30"
+            height="30"
             alt="新增通知"
             class="size-[24.64px]"
           />

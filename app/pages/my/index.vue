@@ -78,7 +78,12 @@ onUnmounted(() => {
         <p class="text-xl font-bold">我的</p>
         <div class="py-2 pl-2">
           <NuxtLink to="/">
-            <img src="/icons/my/setting.svg" alt="設定按鈕" />
+            <img
+              src="/icons/my/setting.svg"
+              width="25"
+              height="25"
+              alt="設定按鈕"
+            />
           </NuxtLink>
         </div>
       </section>
@@ -87,7 +92,12 @@ onUnmounted(() => {
           <div class="me-3">
             <div class="size-[72px] rounded-full border border-primary p-1">
               <div class="h-full w-full overflow-hidden rounded-full">
-                <img src="/images/home/normal-circle.webp" alt="綠色火山君" />
+                <img
+                  src="/images/home/normal-circle.webp"
+                  width="240"
+                  height="240"
+                  alt="綠色火山君"
+                />
               </div>
             </div>
           </div>
@@ -101,7 +111,12 @@ onUnmounted(() => {
 
         <div class="ms-auto p-2">
           <NuxtLink to="/">
-            <img src="/icons/my/setting.svg" alt="設定按鈕" />
+            <img
+              src="/icons/my/setting.svg"
+              width="25"
+              height="25"
+              alt="設定按鈕"
+            />
           </NuxtLink>
         </div>
       </section>
@@ -160,6 +175,8 @@ onUnmounted(() => {
         <div class="absolute -right-[39.49px] -top-5 z-10 w-[182.49px]">
           <img
             src="/images/home/green-volcano.webp"
+            width="1125"
+            height="1710"
             alt="火山軍"
             class="mask-alpha"
           />
@@ -202,24 +219,38 @@ onUnmounted(() => {
       <section class="mb-3 rounded-3xl bg-neutral-900 px-6 py-7">
         <NuxtLink to="/my/notify" class="mb-5 flex items-center">
           <div class="me-2">
-            <img src="/icons/my/alarm-add-fill.svg" alt="通知" />
+            <img
+              src="/icons/my/alarm-add-fill.svg"
+              width="22"
+              height="22"
+              alt="通知"
+            />
           </div>
           <p class="text-xs font-bold">通知</p>
           <div to="/my/notify" class="ms-auto">
             <img
               src="/icons/my/arrowRight.svg"
+              width="17"
+              height="17"
               class="size-6 text-sm font-bold"
             />
           </div>
         </NuxtLink>
         <NuxtLink to="/" class="flex items-center">
           <div class="me-2">
-            <img src="/icons/my/layout-grid-fill.svg" alt="桌面小組件" />
+            <img
+              src="/icons/my/layout-grid-fill.svg"
+              width="22"
+              height="22"
+              alt="桌面小組件"
+            />
           </div>
           <p class="text-xs font-bold">桌面小組件</p>
           <div class="ms-auto">
             <img
               src="/icons/my/arrowRight.svg"
+              width="17"
+              height="17"
               class="size-6 text-sm font-bold"
             />
           </div>
@@ -253,6 +284,8 @@ onUnmounted(() => {
                 >
                   <img
                     src="/images/home/eruption.webp"
+                    width="360"
+                    height="300"
                     alt="感覺有點煩"
                     class="w-[120px]"
                   />
@@ -264,7 +297,12 @@ onUnmounted(() => {
                       class="flex items-center gap-0.5 text-md text-neutral-300"
                     >
                       讓我吼一吼
-                      <img src="/icons/right-arrow.svg" alt="右箭頭" />
+                      <img
+                        src="/icons/right-arrow.svg"
+                        width="24"
+                        height="24"
+                        alt="右箭頭"
+                      />
                     </p>
                   </div>
                 </article>
@@ -280,6 +318,8 @@ onUnmounted(() => {
                 >
                   <img
                     src="/images/home/breath.webp"
+                    width="360"
+                    height="300"
                     alt="想找回平靜"
                     class="w-[120px]"
                   />
@@ -291,7 +331,12 @@ onUnmounted(() => {
                       class="flex items-center gap-0.5 text-md text-neutral-300"
                     >
                       來吸幾口氣
-                      <img src="/icons/right-arrow.svg" alt="右箭頭" />
+                      <img
+                        src="/icons/right-arrow.svg"
+                        width="24"
+                        height="24"
+                        alt="右箭頭"
+                      />
                     </p>
                   </div>
                 </article>

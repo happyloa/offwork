@@ -94,7 +94,12 @@ onUnmounted(finishYelling);
       :to="{ path: '/', query: { openCeremony: 'true' } }"
       class="absolute left-0 top-1/2 block -translate-y-1/2 py-2 pl-4 pr-2"
     >
-      <img src="/icons/white-left-arrow.svg" alt="返回箭頭" />
+      <img
+        src="/icons/white-left-arrow.svg"
+        width="24"
+        height="24"
+        alt="返回箭頭"
+      />
     </NuxtLink>
     放聲大吼吧
   </h1>
@@ -102,6 +107,8 @@ onUnmounted(finishYelling);
   <main v-if="isYelling">
     <img
       src="/images/yelling/yelling-red-volcano.gif"
+      width="320"
+      height="512"
       alt="大吼中紅色火山君"
       class="pointer-events-none absolute bottom-[104px] left-1/2 z-0 w-full max-w-[375px] -translate-x-1/2"
     />
@@ -122,7 +129,12 @@ onUnmounted(finishYelling);
           class="block rounded-full bg-neutral-950 p-6"
           @click="finishYelling()"
         >
-          <img src="/icons/yelling/stop-fill.svg" alt="停止 icon" />
+          <img
+            src="/icons/yelling/stop-fill.svg"
+            width="32"
+            height="32"
+            alt="停止 icon"
+          />
         </NuxtLink>
       </div>
       <LayoutBottomBar class="mb-2 mt-[27px]" />
@@ -132,6 +144,8 @@ onUnmounted(finishYelling);
   <main v-else>
     <img
       src="/images/yelling/before-yelling-red-volcano.webp"
+      width="1125"
+      height="1710"
       alt="準備大吼紅色火山君"
       class="pointer-events-none absolute bottom-[104px] left-1/2 z-0 w-full max-w-[375px] -translate-x-1/2"
     />
@@ -139,7 +153,13 @@ onUnmounted(finishYelling);
     <div
       class="absolute bottom-0 left-1/2 z-10 flex w-full -translate-x-1/2 flex-col items-center bg-gradient-to-t from-neutral-950 from-50% to-[#29292D00] pt-8"
     >
-      <img src="/images/yelling/volume.webp" alt="音量圖片" class="mb-8" />
+      <img
+        src="/images/yelling/volume.webp"
+        width="259"
+        height="67"
+        alt="音量圖片"
+        class="mb-8"
+      />
       <!-- 開始按鈕 -->
       <div class="mb-10 rounded-full border-[11px] border-[#C0C7DC33]">
         <button
@@ -147,7 +167,12 @@ onUnmounted(finishYelling);
           class="rounded-full bg-white p-6"
           @click="startYelling"
         >
-          <img src="/icons/yelling/mic.svg" alt="麥克風 icon" />
+          <img
+            src="/icons/yelling/mic.svg"
+            width="32"
+            height="32"
+            alt="麥克風 icon"
+          />
         </button>
       </div>
       <LayoutBottomBar class="mb-2 mt-[27px]" />

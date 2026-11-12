@@ -153,14 +153,19 @@ watch(showFeelingCalm, (open) => {
       </h2>
       <h1 class="text-h2 font-bold text-neutral-900">啟動下班人生</h1>
       <span class="flex items-center gap-1 font-bold">
-        <img src="/icons/clock.svg" alt="鬧鐘 icon" />下班儀式｜下午 06:30
+        <img
+          src="/icons/clock.svg"
+          width="24"
+          height="24"
+          alt="鬧鐘 icon"
+        />下班儀式｜下午 06:30
       </span>
     </div>
     <!-- 爆發指數 -->
     <p
       class="relative z-10 flex items-center justify-center gap-1 text-sm font-bold text-white"
     >
-      <img src="/icons/light.svg" alt="白色點點" />
+      <img src="/icons/light.svg" width="11" height="10" alt="白色點點" />
       爆發指數 {{ burstIndexOf(todaySummary) }}％
     </p>
     <!-- 火山君（會隨著爆發指數來換） -->
@@ -186,7 +191,12 @@ watch(showFeelingCalm, (open) => {
             type="button"
             class="rounded-full bg-[#33333980] p-5 shadow-button backdrop-blur"
           >
-            <img src="/icons/home/mood.svg" alt="紀錄心情" />
+            <img
+              src="/icons/home/mood.svg"
+              width="29"
+              height="28"
+              alt="紀錄心情"
+            />
           </button>
           紀錄心情
         </div>
@@ -196,7 +206,12 @@ watch(showFeelingCalm, (open) => {
             class="rounded-full bg-[#33333980] p-5 shadow-button backdrop-blur"
             @click="showCeremonyNav = true"
           >
-            <img src="/icons/home/ceremony.svg" alt="下班儀式" />
+            <img
+              src="/icons/home/ceremony.svg"
+              width="29"
+              height="28"
+              alt="下班儀式"
+            />
           </button>
           下班儀式
         </div>
@@ -205,7 +220,12 @@ watch(showFeelingCalm, (open) => {
             type="button"
             class="rounded-full bg-[#33333980] p-5 shadow-button backdrop-blur"
           >
-            <img src="/icons/home/sleep.svg" alt="睡眠" />
+            <img
+              src="/icons/home/sleep.svg"
+              width="29"
+              height="28"
+              alt="睡眠"
+            />
           </button>
           睡眠
         </div>
@@ -236,6 +256,8 @@ watch(showFeelingCalm, (open) => {
           >
             <img
               src="/images/home/eruption.webp"
+              width="360"
+              height="300"
               alt="感覺有點煩"
               class="w-[120px]"
             />
@@ -243,7 +265,12 @@ watch(showFeelingCalm, (open) => {
               <h4 class="mb-1 text-md font-bold text-white">感覺有點煩</h4>
               <p class="flex items-center gap-0.5 text-md text-neutral-300">
                 讓我吼一吼
-                <img src="/icons/right-arrow.svg" alt="右箭頭" />
+                <img
+                  src="/icons/right-arrow.svg"
+                  width="24"
+                  height="24"
+                  alt="右箭頭"
+                />
               </p>
             </div>
           </article>
@@ -256,6 +283,8 @@ watch(showFeelingCalm, (open) => {
           >
             <img
               src="/images/home/breath.webp"
+              width="360"
+              height="300"
               alt="想找回平靜"
               class="w-[120px]"
             />
@@ -263,7 +292,12 @@ watch(showFeelingCalm, (open) => {
               <h4 class="mb-1 text-md font-bold text-white">想找回平靜</h4>
               <p class="flex items-center gap-0.5 text-md text-neutral-300">
                 來吸幾口氣
-                <img src="/icons/right-arrow.svg" alt="右箭頭" />
+                <img
+                  src="/icons/right-arrow.svg"
+                  width="24"
+                  height="24"
+                  alt="右箭頭"
+                />
               </p>
             </div>
           </article>
@@ -290,6 +324,8 @@ watch(showFeelingCalm, (open) => {
   >
     <img
       src="/images/home/feeling-relieved.webp"
+      width="240"
+      height="240"
       alt="舒服點了嗎？"
       class="mx-auto mb-6 block size-32"
     />
@@ -306,7 +342,7 @@ watch(showFeelingCalm, (open) => {
           <img
             src="/icons/timer.svg"
             alt="你釋放了 icon"
-            class="rounded-full bg-neutral-900 p-3"
+            class="size-[52px] rounded-full bg-neutral-900 p-3"
           />
           <div>
             <h4 class="mb-0.5 text-sm text-neutral-300">你釋放了</h4>
@@ -329,7 +365,7 @@ watch(showFeelingCalm, (open) => {
           <img
             src="/icons/voice.svg"
             alt="最高分貝 icon"
-            class="rounded-full bg-neutral-900 p-3"
+            class="size-[52px] rounded-full bg-neutral-900 p-3"
           />
           <div>
             <h4 class="mb-0.5 text-sm text-neutral-300">最高分貝</h4>
@@ -368,6 +404,8 @@ watch(showFeelingCalm, (open) => {
   >
     <img
       src="/images/home/feeling-calm.webp"
+      width="240"
+      height="240"
       alt="平靜點了嗎？"
       class="mx-auto mb-6 block size-32"
     />
@@ -381,7 +419,7 @@ watch(showFeelingCalm, (open) => {
       <img
         src="/icons/timer.svg"
         alt="你呼吸了 icon"
-        class="rounded-full bg-neutral-900 p-3"
+        class="size-[52px] rounded-full bg-neutral-900 p-3"
       />
       <div>
         <h4 class="mb-0.5 text-sm text-neutral-300">你呼吸了</h4>
