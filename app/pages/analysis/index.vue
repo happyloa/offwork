@@ -150,8 +150,7 @@ const dataCard = computed(() => [
           <li>
             <NuxtLink
               :class="`block w-full rounded-xl px-6 py-4 text-center font-bold ${currentPage == '大吼' ? 'bg-neutral-900 text-primary' : ''}`"
-              to="#"
-              @click="isOpen = true"
+              @click="isOpen = false"
             >
               大吼
             </NuxtLink>

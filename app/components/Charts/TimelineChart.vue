@@ -11,16 +11,9 @@ const props = defineProps({
 const chartRef = ref(null);
 let myChart = null;
 
-const initChart = () => {
-  if (chartRef.value) {
-    if (myChart) {
-      myChart.dispose();
-    }
-    myChart = echarts.init(chartRef.value);
-    window.addEventListener("resize", () => {
-      myChart?.resize();
-    });
-  }
+// 具名函式，元件卸載時才能把監聽移除（匿名函式移不掉，每掛載一次就多留一個）
+const handleResize = () => {
+  myChart?.resize();
 };
 
 const updateChart = (data) => {
@@ -97,9 +90,7 @@ onMounted(() => {
   if (chartRef.value) {
     myChart = echarts.init(chartRef.value);
 
-    window.addEventListener("resize", () => {
-      myChart?.resize();
-    });
+    window.addEventListener("resize", handleResize);
     updateChart(props.chartData);
   }
 });
@@ -112,6 +103,7 @@ watch(
 );
 
 onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
   if (myChart) {
     myChart.dispose();
   }
