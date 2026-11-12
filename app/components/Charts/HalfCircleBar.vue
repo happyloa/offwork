@@ -1,7 +1,17 @@
 <script setup>
 import { gsap } from "gsap";
+const props = defineProps({
+  chartTitle: {
+    type: String,
+    required: true,
+  },
+  /** 指數（0–100） */
+  value: {
+    type: Number,
+    default: 70,
+  },
+});
 const progress = ref(0);
-const finalProgress = 70;
 const config = {
   cx: 50,
   cy: 52.5,
@@ -20,26 +30,52 @@ const pathD = computed(() => {
   return `M ${config.cx - config.r} ${config.cy} A ${config.r} ${config.r} 0 0 1 ${config.cx + config.r} ${config.cy}`;
 });
 
-onMounted(() => {
-  const tl = gsap.timeline();
+let timeline = null;
+let isIntroPlaying = false;
 
-  tl.to(progress, {
+// 進場動畫：先衝到 100，再彈回實際數值
+function playIntro() {
+  timeline?.kill();
+  progress.value = 0;
+  isIntroPlaying = true;
+  timeline = gsap.timeline({
+    onComplete: () => {
+      isIntroPlaying = false;
+    },
+  });
+
+  timeline.to(progress, {
     value: 100,
     duration: 0.7,
     ease: "power2.inOut",
   });
 
-  tl.to(progress, {
-    value: finalProgress,
+  timeline.to(progress, {
+    value: props.value,
     duration: 1,
     ease: "bounce.out",
   });
-});
-const props = defineProps({
-  chartTitle: {
-    type: String,
-    required: true,
+}
+
+onMounted(playIntro);
+
+// 數值改變（切換日期、資料載入完成）：進場動畫還在跑就以新數值重播，
+// 否則直接滑到新數值
+watch(
+  () => props.value,
+  (value) => {
+    if (isIntroPlaying) {
+      playIntro();
+      return;
+    }
+    timeline?.kill();
+    timeline = gsap.timeline();
+    timeline.to(progress, { value, duration: 0.6, ease: "power2.out" });
   },
+);
+
+onUnmounted(() => {
+  timeline?.kill();
 });
 </script>
 <template>

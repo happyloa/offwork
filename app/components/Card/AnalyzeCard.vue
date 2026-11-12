@@ -5,12 +5,18 @@ import { ChartsDoughnutChart } from "#components";
 import { shallowRef } from "vue";
 const props = defineProps({
   title: String,
-  data: Number,
+  // 數字，或尚未量到時的 "--"
+  data: [Number, String],
   unit: String,
   comment: String,
   color: String,
   url: String,
   charts: String,
+  /** 傳給圖表元件的 props（例如 { percentage: 60 }），不傳則用圖表自己的預設值 */
+  chartProps: {
+    type: Object,
+    default: () => ({}),
+  },
   isUpStandard: {
     type: Boolean,
     default: undefined,
@@ -77,7 +83,11 @@ watch(
           </div>
         </div>
         <div>
-          <component :is="currentChartType" v-if="currentChartType" />
+          <component
+            :is="currentChartType"
+            v-if="currentChartType"
+            v-bind="chartProps"
+          />
         </div>
       </div>
     </div>

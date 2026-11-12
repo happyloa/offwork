@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+defineProps({
+  /** 火山君說的話 */
+  message: {
+    type: String,
+    default: "還好嗎？你似乎壓力很大，吼一吼有沒有比較舒服啊～",
+  },
+});
+</script>
 <template>
   <section>
     <div class="grid grid-cols-4 gap-2 pb-4">
@@ -16,9 +24,7 @@
         <p
           class="relative px-5 py-4 text-[#27292B] before:absolute before:left-[-15px] before:top-1/3 before:z-10 before:h-[15px] before:w-[20px] before:-translate-y-1/2 before:bg-[url(/images/home/triangle.svg)] before:bg-contain before:bg-center before:bg-no-repeat before:content-['']"
         >
-          <span class="font-medium"
-            >還好嗎？你似乎壓力很大，吼一吼有沒有比較舒服啊～</span
-          >
+          <span class="font-medium">{{ message }}</span>
         </p>
       </div>
     </div>

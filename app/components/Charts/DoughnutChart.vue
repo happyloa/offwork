@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const props = defineProps({
   percentage: {
@@ -72,4 +72,7 @@ const drawRing = () => {
 onMounted(() => {
   drawRing();
 });
+
+// 資料改變時重畫
+watch(() => props.percentage, drawRing);
 </script>

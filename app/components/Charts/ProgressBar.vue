@@ -1,5 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+
+// 畫布的邏輯尺寸（CSS px）
+const CANVAS_WIDTH = 98;
+const CANVAS_HEIGHT = 60;
 
 const props = defineProps({
   totalSegments: {
@@ -42,9 +46,10 @@ const drawProgressBar = () => {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
+  // 用固定的邏輯尺寸，重畫時才不會被上一次乘過 dpr 的寬高越放越大
   const dpr = window.devicePixelRatio || 1;
-  const width = canvas.width;
-  const height = canvas.height;
+  const width = CANVAS_WIDTH;
+  const height = CANVAS_HEIGHT;
 
   canvas.style.width = width + "px";
   canvas.style.height = height + "px";
@@ -81,9 +86,16 @@ const drawProgressBar = () => {
 onMounted(() => {
   drawProgressBar();
 });
+
+// 資料改變時重畫
+watch(() => [props.level, props.totalSegments], drawProgressBar);
 </script>
 <template>
   <div class="py-4.5 h-[60px] w-[98px]">
-    <canvas ref="progressBarCanvas" width="98" height="60"></canvas>
+    <canvas
+      ref="progressBarCanvas"
+      :width="CANVAS_WIDTH"
+      :height="CANVAS_HEIGHT"
+    ></canvas>
   </div>
 </template>
