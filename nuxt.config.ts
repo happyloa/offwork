@@ -1,7 +1,12 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ["@nuxtjs/google-fonts", "@nuxtjs/tailwindcss", "nuxt-lottie"],
+  // 中文字型被切成 100 多段 unicode-range，@font-face 規則約 114KB。
+  // 預設會被內嵌進每一頁的 HTML，關閉後改放在可長期快取的 CSS 檔，只需下載一次
+  features: {
+    inlineStyles: false,
+  },
+  modules: ["@nuxt/fonts", "@nuxtjs/tailwindcss", "nuxt-lottie"],
   tailwindcss: {
     cssPath: "~/assets/css/tailwind.css",
   },
@@ -53,13 +58,17 @@ export default defineNuxtConfig({
     lottieFolder: "/assets/lottie",
   },
 
-  googleFonts: {
-    families: {
-      "Noto+Sans+TC": [400, 500, 700],
-    },
-    download: true,
-    inject: true,
-    display: "swap",
+  // 字型於建置時下載並自架（不會在執行期連到 Google），
+  // 由 CSS 內的 font-family 宣告自動偵測並產生 @font-face
+  fonts: {
+    families: [
+      {
+        name: "Noto Sans TC",
+        provider: "google",
+        weights: ["400 700"],
+        styles: ["normal"],
+      },
+    ],
   },
 
   css: ["~/assets/css/global.css"],
