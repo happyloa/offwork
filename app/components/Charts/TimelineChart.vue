@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted, onUnmounted, watch } from "vue";
+import * as echarts from "echarts";
 
 const props = defineProps({
   chartData: {
     type: Object,
     required: true,
-  }
+  },
 });
 const chartRef = ref(null);
 let myChart = null;
@@ -17,7 +17,7 @@ const initChart = () => {
       myChart.dispose();
     }
     myChart = echarts.init(chartRef.value);
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       myChart?.resize();
     });
   }
@@ -25,7 +25,7 @@ const initChart = () => {
 
 const updateChart = (data) => {
   if (!myChart || !data) {
-    return
+    return;
   }
   const { labels, yLabels, data: chartDataArray } = data;
 
@@ -35,60 +35,60 @@ const updateChart = (data) => {
       min: 0,
       max: 10,
       calculable: true,
-      orient: 'horizontal',
-      left: 'center',
+      orient: "horizontal",
+      left: "center",
       bottom: 0,
       inRange: {
-        color: ['#3C3C3E', '#A4CD44']
+        color: ["#3C3C3E", "#A4CD44"],
       },
       textStyle: {
-        color: '#FFFFFF'
-      }
+        color: "#FFFFFF",
+      },
     },
     xAxis: {
-      type: 'category',
+      type: "category",
       data: labels,
-      axisLabel: { color: '#FFFFFF', align: 'center', fontSize: '11px' },
+      axisLabel: { color: "#FFFFFF", align: "center", fontSize: "11px" },
       // axisLabel: { show: false },
       splitLine: { show: false },
       axisLine: { show: false },
       axisTick: { show: false },
     },
     yAxis: {
-      type: 'category',
+      type: "category",
       data: yLabels,
-      axisLabel: { show: true, interval: 5, color: '#fff', fontSize: '11px' },
+      axisLabel: { show: true, interval: 5, color: "#fff", fontSize: "11px" },
       axisLine: { show: false },
-      axisTick: { show: false }
+      axisTick: { show: false },
     },
     series: [
       {
-        name: '大吼次數',
-        type: 'heatmap',
-        data: chartDataArray, 
+        name: "大吼次數",
+        type: "heatmap",
+        data: chartDataArray,
         label: {
-          show: false
+          show: false,
         },
         itemStyle: {
           borderRadius: 4,
           borderWidth: 2,
-          borderColor: '#333338'
+          borderColor: "#333338",
         },
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
+            shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
+      },
     ],
     grid: {
-      top: '10%',
-      left: '5%',
-      right: '0%',
-      bottom: '0%',
-      containLabel: false
-    }
+      top: "10%",
+      left: "5%",
+      right: "0%",
+      bottom: "0%",
+      containLabel: false,
+    },
   };
 
   myChart.setOption(option, true);
@@ -97,16 +97,19 @@ onMounted(() => {
   if (chartRef.value) {
     myChart = echarts.init(chartRef.value);
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       myChart?.resize();
-    })
-    updateChart(props.chartData)
+    });
+    updateChart(props.chartData);
   }
 });
 
-watch(() => props.chartData, (newData) => {
-  updateChart(newData);
-});
+watch(
+  () => props.chartData,
+  (newData) => {
+    updateChart(newData);
+  },
+);
 
 onUnmounted(() => {
   if (myChart) {
@@ -115,7 +118,6 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div ref="chartRef" class="w-full h-60"></div>
+  <div ref="chartRef" class="h-60 w-full"></div>
 </template>
-<style scoped>
-</style>
+<style scoped></style>

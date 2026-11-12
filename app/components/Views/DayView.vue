@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onMounted, onUnmounted } from "vue";
+import * as echarts from "echarts";
 
 const props = defineProps({
   chartData: {
     type: Array,
     required: true,
-  }
+  },
 });
 const chartRef = ref(null);
 let myChart = null;
@@ -26,40 +26,40 @@ const setChartOption = (data) => {
         min: 0,
         max: 10, // 根據你的最大值調整
         calculable: true,
-        orient: 'horizontal',
-        left: 'center',
-        bottom: '15%',
+        orient: "horizontal",
+        left: "center",
+        bottom: "15%",
         inRange: {
-          color: ['#FFFFFF', '#45A548'] // 顏色由淺到深
-        }
+          color: ["#FFFFFF", "#45A548"], // 顏色由淺到深
+        },
       },
       // X 軸（小時）
       xAxis: {
-        type: 'category',
+        type: "category",
         data: Array.from({ length: 24 }, (_, i) => `${i}`),
       },
       // Y 軸（星期幾，這裡先用簡單的範例）
       yAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        type: "category",
+        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       },
       // 核心資料
       series: [
         {
-          name: '大吼次數',
-          type: 'heatmap',
+          name: "大吼次數",
+          type: "heatmap",
           data: data,
           label: {
-            show: true
+            show: true,
           },
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
-          }
-        }
-      ]
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
     };
 
     myChart.setOption(option);
@@ -69,7 +69,7 @@ const setChartOption = (data) => {
 onMounted(() => {
   initChart();
   // 監聽視窗大小改變
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     myChart?.resize();
   });
 });
@@ -82,14 +82,17 @@ onUnmounted(() => {
 });
 
 // 使用 watch 監聽 props.chartData 的變化，動態更新圖表
-watch(() => props.chartData, (newData) => {
-  if (newData.length > 0) {
-    setChartOption(newData);
-  }
-}, { immediate: true });
+watch(
+  () => props.chartData,
+  (newData) => {
+    if (newData.length > 0) {
+      setChartOption(newData);
+    }
+  },
+  { immediate: true },
+);
 </script>
 <template>
-  <div ref="chartRef" class="w-full h-64"></div>
+  <div ref="chartRef" class="h-64 w-full"></div>
 </template>
-<style scoped>
-</style>
+<style scoped></style>
