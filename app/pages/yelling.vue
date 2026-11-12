@@ -4,6 +4,10 @@ useSeoMeta({
   ogTitle: "大吼 | 健康生活 OFFWORK APP",
 });
 
+definePageMeta({
+  shell: { scrollable: false },
+});
+
 const isYelling = ref(false);
 
 // 新增：大吼開始時間與計時器

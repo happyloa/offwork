@@ -129,32 +129,18 @@ if (import.meta.hot) {
 }
 
 /* ──────────────────────────────────────────────
- * A) 路徑白名單（完全相符才生效）
+ * A) 版面設定（每頁透過 definePageMeta 的 shell 注入）
+ *  - scrollable: false        → 內容區不可捲動
+ *  - statusBar: "secondary"   → 狀態列使用 bg-secondary
+ *  - statusBar: "transparent" → 狀態列透明
+ *  未宣告的頁面：可捲動、狀態列半透+模糊
  * ────────────────────────────────────────────── */
-// 1) 內容區「不可捲動」的路徑
-const NON_SCROLLABLE_PATHS = new Set([
-  "/",
-  "/yelling",
-  "/find-peace/calm-breathe",
-  "/find-peace/calm-breathe/breathing",
-]);
-
-// 2) 狀態列使用 bg-secondary 的路徑
-const STATUSBAR_SECONDARY_PATHS = new Set(["/", "/find-peace/calm-breathe"]);
-
-// 3) 狀態列「透明」的路徑
-const STATUSBAR_TRANSPARENT_PATHS = new Set([
-  "/find-peace/calm-breathe/breathing",
-]);
-
-const currentPath = computed(() => route.path);
+const shellMeta = computed(() => route.meta?.shell || {});
 
 /* ──────────────────────────────────────────────
- * B) 視覺 class（由白名單決定）
+ * B) 視覺 class（由 shell 設定決定）
  * ────────────────────────────────────────────── */
-const isNonScrollable = computed(() =>
-  NON_SCROLLABLE_PATHS.has(currentPath.value),
-);
+const isNonScrollable = computed(() => shellMeta.value.scrollable === false);
 
 const appContentScrollClass = computed(() =>
   isNonScrollable.value
@@ -162,11 +148,10 @@ const appContentScrollClass = computed(() =>
     : "overflow-x-hidden overflow-y-scroll",
 );
 
-// 先判斷透明，其次 secondary，最後預設半透+模糊
 const statusBarBgClass = computed(() => {
-  const p = currentPath.value;
-  if (STATUSBAR_TRANSPARENT_PATHS.has(p)) return "bg-transparent";
-  if (STATUSBAR_SECONDARY_PATHS.has(p)) return "bg-secondary";
+  const statusBar = shellMeta.value.statusBar;
+  if (statusBar === "transparent") return "bg-transparent";
+  if (statusBar === "secondary") return "bg-secondary";
   return "bg-[#29292DCC] backdrop-blur-lg";
 });
 </script>

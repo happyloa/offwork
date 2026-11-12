@@ -4,6 +4,10 @@ useSeoMeta({
   ogTitle: "首頁 | 健康生活 OFFWORK APP",
 });
 
+definePageMeta({
+  shell: { scrollable: false, statusBar: "secondary" },
+});
+
 const route = useRoute();
 const router = useRouter();
 

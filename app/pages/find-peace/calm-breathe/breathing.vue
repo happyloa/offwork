@@ -6,6 +6,11 @@ useSeoMeta({
   title: "平穩呼吸法呼吸中 | 健康生活 OFFWORK APP",
   ogTitle: "平穩呼吸法呼吸中 | 健康生活 OFFWORK APP",
 });
+
+definePageMeta({
+  shell: { scrollable: false, statusBar: "transparent" },
+});
+
 const route = useRoute();
 const router = useRouter();
 

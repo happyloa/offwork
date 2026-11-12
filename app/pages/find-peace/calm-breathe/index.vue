@@ -4,6 +4,10 @@ useSeoMeta({
   ogTitle: "平穩呼吸法 | 健康生活 OFFWORK APP",
 });
 
+definePageMeta({
+  shell: { scrollable: false, statusBar: "secondary" },
+});
+
 // 控制 Buttom Sheets (時間設定) 顯示狀態
 const showTimeSetting = ref(false);
 
