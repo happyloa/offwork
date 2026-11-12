@@ -1,3 +1,9 @@
+// 社群分享圖必須是絕對網址；換網域時設定環境變數 NUXT_PUBLIC_SITE_URL 即可
+const siteUrl = (
+  process.env.NUXT_PUBLIC_SITE_URL || "https://offwork.clovetseng.dev"
+).replace(/\/$/, "");
+const ogImage = `${siteUrl}/ogImage.webp`;
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -38,17 +44,13 @@ export default defineNuxtConfig({
           property: "og:description",
           content: `丟掉煩惱，讓腦袋準時下班。用 OFFWORK 啟動你的下班人生。`,
         },
-        {
-          property: "og:image",
-          content: "/ogImage.webp",
-        },
+        { property: "og:image", content: ogImage },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "675" },
         { property: "og:type", content: "website" },
         { property: "og:locale", content: "zh_TW" },
-        { name: "twitter:card", content: "/ogImage.webp" },
-        {
-          name: "twitter:image",
-          content: "/ogImage.webp",
-        },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: ogImage },
       ],
     },
   },
