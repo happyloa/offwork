@@ -15,6 +15,7 @@ const TICK_MS = 100;
  * - 倒數：總時長扣掉「實際進行」的時間，暫停期間不計
  * - 階段：依呼吸法的 phases 循環；暫停後繼續會從吸氣重新開始
  * - 時長紀錄：每秒寫入 sessionStorage，結束／離開頁面時再補寫一次
+ * - 練習紀錄：結束／離開頁面時存一筆到 localStorage（見 usePracticeRecords）
  */
 export function useBreathingSession(
   technique: BreathingTechnique,
@@ -36,6 +37,9 @@ export function useBreathingSession(
   let lastPhaseId = -1;
   let lastWrittenSec = -1;
   let timer: ReturnType<typeof setInterval> | null = null;
+  let startedAt = 0; // 練習開始的時間戳，存紀錄用
+
+  const { add: addPracticeRecord } = usePracticeRecords();
 
   const phase = computed(() => phases[phaseIndex.value]!);
   const isRunning = computed(() => status.value === "running");
@@ -126,11 +130,25 @@ export function useBreathingSession(
     }
     status.value = next;
     writeElapsed();
+    if (next === "finished") saveRecord();
+  }
+
+  /** 練習結束時存一筆紀錄（不滿 1 秒不算） */
+  function saveRecord() {
+    const seconds = Math.min(totalSeconds, Math.floor(activeBeforeMs / 1000));
+    if (seconds < 1) return;
+    addPracticeRecord({
+      type: "breathing",
+      startedAt,
+      seconds,
+      techniqueId: technique.id,
+    });
   }
 
   function start() {
     if (status.value !== "idle") return;
     activeBeforeMs = 0;
+    startedAt = Date.now();
     run();
   }
 

@@ -40,14 +40,32 @@ const startYelling = () => {
   yellingTimer = window.setInterval(writeYellingElapsed, 1000);
 };
 
-// 若使用者在 1 秒內就跳轉，unmount 時再補記一次
-onUnmounted(() => {
+// 結束大吼：補記時長，並存一筆練習紀錄。
+// 按停止與離開頁面都會呼叫，只處理第一次。
+const { add: addPracticeRecord } = usePracticeRecords();
+let hasFinished = false;
+
+function finishYelling() {
   if (yellingTimer) {
     clearInterval(yellingTimer);
     yellingTimer = null;
   }
+  if (yellingStartMs.value === null || hasFinished) return;
+  hasFinished = true;
+
   writeYellingElapsed();
-});
+  const seconds = Math.floor((Date.now() - yellingStartMs.value) / 1000);
+  // 不滿 1 秒不算一次練習
+  if (seconds >= 1) {
+    addPracticeRecord({
+      type: "yelling",
+      startedAt: yellingStartMs.value,
+      seconds,
+    });
+  }
+}
+
+onUnmounted(finishYelling);
 </script>
 
 <template>
@@ -80,7 +98,7 @@ onUnmounted(() => {
         <NuxtLink
           :to="{ path: '/', query: { openFeelingBetter: 'true' } }"
           class="block rounded-full bg-neutral-950 p-6"
-          @click="writeYellingElapsed()"
+          @click="finishYelling()"
         >
           <img src="/icons/yelling/stop-fill.svg" alt="停止 icon" />
         </NuxtLink>
