@@ -17,7 +17,7 @@ const analyzeData = ref([
     comment: "最大分貝",
     url: "/analysis",
     charts: "progress",
-    isUpStandard:false
+    isUpStandard: false,
   },
   {
     id: 2,
@@ -32,65 +32,68 @@ const analyzeData = ref([
     comment: "今日 / 目標",
     url: "#",
     charts: "doughnut",
-    isUpStandard:true
+    isUpStandard: true,
   },
   {
-    id:4,
+    id: 4,
     title: "呼吸",
     data: 30,
     unit: "分鐘 / 3分鐘",
     comment: "今日 / 目標",
     url: "#",
     charts: "doughnut",
-    isUpStandard:true
+    isUpStandard: true,
   },
   {
-    id:5,
+    id: 5,
     title: "冥想",
     comment: "尚無紀錄",
     url: "#",
   },
-])
-const currentDate = ref('7/17');
+]);
+const currentDate = ref("7/17");
 const openModal = ref(false);
-const chartTitle = ref('爆發指數')
+const chartTitle = ref("爆發指數");
 const handleCalendarSelect = () => {
-  openModal.value = false
-}
+  openModal.value = false;
+};
 </script>
 <template>
   <ClientOnly>
-  <main class="bg-neutral-950 px-4 ">
-    <div class=" text-white grid gap-4 py-4">
-      <!-- 日期及日曆 -->
-      <LayoutDateNavigation :dateText="currentDate" @open-modal="openModal = true"/>
-      <CommonModal v-model:show="openModal">
-        <CommonCalendar @select-day="handleCalendarSelect"/>
-      </CommonModal>
-      <!-- 爆發指數 -->
-      <section>
-        <ChartsHalfCircleBar :chartTitle="chartTitle"/>
-      </section>
-      <!-- 火山君關心你 -->
-      <CardVolcanokun />
-      <!-- 分析圖卡 -->
-      <template v-for="item in analyzeData" :key="item.id">
-        <CardAnalyzeCard
-          :title="item.title"
-          :data="item.data"
-          :unit="item.unit"
-          :comment="item.comment"
-          :url="item.url"
-          :charts="item.charts"
-          :isUpStandard="item.isUpStandard"
+    <main class="bg-neutral-950 px-4">
+      <div class="grid gap-4 py-4 text-white">
+        <!-- 日期及日曆 -->
+        <LayoutDateNavigation
+          :dateText="currentDate"
+          @open-modal="openModal = true"
         />
-      </template>
-    </div>
-    <!-- nav -->
-    <div class="sticky inset-x-0 bottom-2">
-      <LayoutNavBar />
-      <LayoutBottomBar class="mb-2 mt-[27px]" />
-    </div>
-  </main>
+        <CommonModal v-model:show="openModal">
+          <CommonCalendar @select-day="handleCalendarSelect" />
+        </CommonModal>
+        <!-- 爆發指數 -->
+        <section>
+          <ChartsHalfCircleBar :chartTitle="chartTitle" />
+        </section>
+        <!-- 火山君關心你 -->
+        <CardVolcanokun />
+        <!-- 分析圖卡 -->
+        <template v-for="item in analyzeData" :key="item.id">
+          <CardAnalyzeCard
+            :title="item.title"
+            :data="item.data"
+            :unit="item.unit"
+            :comment="item.comment"
+            :url="item.url"
+            :charts="item.charts"
+            :isUpStandard="item.isUpStandard"
+          />
+        </template>
+      </div>
+      <!-- nav -->
+      <div class="sticky inset-x-0 bottom-2">
+        <LayoutNavBar />
+        <LayoutBottomBar class="mb-2 mt-[27px]" />
+      </div>
+    </main>
   </ClientOnly>
 </template>

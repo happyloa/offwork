@@ -1,5 +1,5 @@
 <script setup>
-import { gsap } from 'gsap';
+import { gsap } from "gsap";
 const progress = ref(0);
 const finalProgress = 70;
 const config = {
@@ -7,7 +7,7 @@ const config = {
   cy: 52.5,
   r: 44.5,
   strokeWidth: 15,
-}
+};
 const displayedProgress = computed(() => {
   return progress.value.toFixed(0);
 });
@@ -15,58 +15,57 @@ const pathLength = computed(() => Math.PI * config.r);
 const strokeDashoffset = computed(() => {
   const progressValue = Math.max(0, Math.min(100, progress.value)) / 100;
   return pathLength.value * (1 - progressValue);
-})
+});
 const pathD = computed(() => {
   return `M ${config.cx - config.r} ${config.cy} A ${config.r} ${config.r} 0 0 1 ${config.cx + config.r} ${config.cy}`;
-})
+});
 
 onMounted(() => {
   const tl = gsap.timeline();
 
-  tl.to(progress, { 
-    value: 100, 
+  tl.to(progress, {
+    value: 100,
     duration: 0.7,
-    ease: "power2.inOut"
+    ease: "power2.inOut",
   });
 
   tl.to(progress, {
     value: finalProgress,
     duration: 1,
-    ease: "bounce.out"
+    ease: "bounce.out",
   });
 });
 const props = defineProps({
   chartTitle: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>
 <template>
-  <div class="relative z-0 flex flex-col items-center my-5">
-    <svg viewBox="0 0 100 60" class="w-[250px] h-[142px] z-0">
-      <path 
-      :d="pathD"
-      fill="transparent"
-      stroke="#44434A"
-      :stroke-width="config.strokeWidth"
-      stroke-linecap="round"
+  <div class="relative z-0 my-5 flex flex-col items-center">
+    <svg viewBox="0 0 100 60" class="z-0 h-[142px] w-[250px]">
+      <path
+        :d="pathD"
+        fill="transparent"
+        stroke="#44434A"
+        :stroke-width="config.strokeWidth"
+        stroke-linecap="round"
       />
-      <path 
-      :d="pathD"
-      fill="transparent"
-      stroke="#F15A3C"
-      :stroke-width="config.strokeWidth"
-      :stroke-dasharray="pathLength"
-      :stroke-dashoffset="strokeDashoffset"
-      stroke-linecap="round"
-      class="transisiton-all duration-700"
+      <path
+        :d="pathD"
+        fill="transparent"
+        stroke="#F15A3C"
+        :stroke-width="config.strokeWidth"
+        :stroke-dasharray="pathLength"
+        :stroke-dashoffset="strokeDashoffset"
+        stroke-linecap="round"
+        class="transisiton-all duration-700"
       />
     </svg>
     <div class="absolute -bottom-2 mt-2 flex flex-col items-center">
-      <span class="font-bold my-1">{{ chartTitle }}</span>
+      <span class="my-1 font-bold">{{ chartTitle }}</span>
       <span class="text-[28px] font-bold">{{ displayedProgress }}%</span>
     </div>
   </div>
 </template>
-

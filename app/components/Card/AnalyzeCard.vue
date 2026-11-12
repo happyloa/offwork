@@ -1,8 +1,8 @@
 <script setup>
-import { ChartsBubbleChart } from '#components';
-import { ChartsProgressBar } from '#components';
-import { ChartsDoughnutChart } from '#components';
-import { shallowRef } from 'vue';
+import { ChartsBubbleChart } from "#components";
+import { ChartsProgressBar } from "#components";
+import { ChartsDoughnutChart } from "#components";
+import { shallowRef } from "vue";
 const props = defineProps({
   title: String,
   data: Number,
@@ -13,52 +13,53 @@ const props = defineProps({
   charts: String,
   isUpStandard: {
     type: Boolean,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 const ChartTypes = {
   doughnut: ChartsDoughnutChart,
   progress: ChartsProgressBar,
-  bubble: ChartsBubbleChart
-}
-const currentChartType = shallowRef(ChartTypes[''])
-watch(() => props.charts, (newChartType) => {
-  if (ChartTypes[newChartType]) {
-    currentChartType.value = ChartTypes[newChartType];
-  } else {
-    currentChartType.value = null;
-  }
-}, { immediate: true });
+  bubble: ChartsBubbleChart,
+};
+const currentChartType = shallowRef(ChartTypes[""]);
+watch(
+  () => props.charts,
+  (newChartType) => {
+    if (ChartTypes[newChartType]) {
+      currentChartType.value = ChartTypes[newChartType];
+    } else {
+      currentChartType.value = null;
+    }
+  },
+  { immediate: true },
+);
 </script>
 <template>
   <NuxtLink
     :to="data ? url : ''"
-    :class="{'pointer-events-none' : !data}"
-    class="border-gradient gradient-card-border block min-w-[136px] rounded-[32px] bg-neutral-900 py-5 px-6 active:bg-neutral-1000"
+    :class="{ 'pointer-events-none': !data }"
+    class="border-gradient gradient-card-border block min-w-[136px] rounded-[32px] bg-neutral-900 px-6 py-5 active:bg-neutral-1000"
     @click.prevent="!data"
   >
     <div>
-      <div class="flex justify-between items-center mb-3">
-        <div class="flex items-center"> 
-          <p class="text-xl text-white font-bold">
+      <div class="mb-3 flex items-center justify-between">
+        <div class="flex items-center">
+          <p class="text-xl font-bold text-white">
             {{ title }}
           </p>
-          <div
-            v-if="isUpStandard != undefined"
-            class="ms-4 flex items-center"
-          >
+          <div v-if="isUpStandard != undefined" class="ms-4 flex items-center">
             <div
               :class="`me-1 ${isUpStandard ? 'bg-alert-success' : 'bg-accent'} size-[10px] rounded-full`"
             ></div>
             <p
-              :class="`text-sm leading-[1.6] font-bold ${isUpStandard ? 'text-alert-success' : 'text-accent'} `"
+              :class="`text-sm font-bold leading-[1.6] ${isUpStandard ? 'text-alert-success' : 'text-accent'} `"
             >
               {{ isUpStandard ? "尚可" : "過多" }}
             </p>
           </div>
         </div>
-        <div v-if="url" class="px-2 py-[6px] self-center">
-          <img src="/icons/white-right-arrow.svg" alt="右箭頭"/>
+        <div v-if="url" class="self-center px-2 py-[6px]">
+          <img src="/icons/white-right-arrow.svg" alt="右箭頭" />
         </div>
       </div>
       <div :class="['flex', comment ? 'justify-between' : 'justify-center']">
@@ -68,15 +69,15 @@ watch(() => props.charts, (newChartType) => {
               {{ data }}
             </p>
             <p class="ms-1 mt-3 text-xs">
-              {{unit }}
+              {{ unit }}
             </p>
           </div>
           <div>
-            <p class="text-neutral-300 text-xs">{{ comment }}</p>
+            <p class="text-xs text-neutral-300">{{ comment }}</p>
           </div>
         </div>
         <div>
-          <component :is="currentChartType" v-if="currentChartType"/>
+          <component :is="currentChartType" v-if="currentChartType" />
         </div>
       </div>
     </div>
