@@ -4,101 +4,48 @@ const props = defineProps({
     type: String,
     default: "day",
   },
+  /** 有大吼的時段 [欄, 小時(0–23), 次數]，由 summarizeYelling 算出 */
+  slots: {
+    type: Array,
+    default: () => [],
+  },
+  /** 日檢視時欄位下方的文字（今天是 Today，其他日期顯示日期） */
+  dayLabel: {
+    type: String,
+    default: "Today",
+  },
 });
-const generateChartGridData = (xLabels, yLength, dataPoints = []) => {
+
+// 各檢視的欄位：日 1 欄、週 7 欄（日～六）、月 5 欄（每 7 天一欄）、年 12 欄（1～12 月）
+const columnLabels = computed(() => ({
+  day: [props.dayLabel],
+  week: ["S", "M", "T", "W", "T", "F", "S"],
+  month: ["1", "8", "15", "22", "29"],
+  year: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+}));
+
+// 縱軸由下到上是 24:00 → 0:00；第 h 點的資料畫在索引 24 - h 的那一列
+const HOUR_LABELS = Array.from({ length: 25 }, (_, i) => `${24 - i}:00`);
+
+// 熱力圖的色階是 0～10 的連續值；三個級距取 3／7／10，
+// 顏色深淺剛好對應圖例的 30%／70%／100%
+const LEVEL_VALUES = [0, 3, 7, 10];
+
+const generateChartGridData = (columnCount, slots) => {
+  const valueMap = new Map(
+    slots.map(([column, hour, count]) => [
+      `${column},${24 - hour}`,
+      LEVEL_VALUES[yellingCountLevel(props.activeView, count)],
+    ]),
+  );
+
   const gridData = [];
-  const dataMap = new Map();
-
-  dataPoints.forEach(([x, y, value]) => {
-    const key = `${x},${y}`;
-    dataMap.set(key, value);
-  });
-
-  for (let x = 0; x < xLabels.length; x++) {
-    for (let y = 1; y <= yLength; y++) {
-      const key = `${x},${y}`;
-      const value = dataMap.get(key) || 0;
-      gridData.push([x, y, value]);
+  for (let x = 0; x < columnCount; x++) {
+    for (let y = 1; y <= 24; y++) {
+      gridData.push([x, y, valueMap.get(`${x},${y}`) ?? 0]);
     }
   }
   return gridData;
-};
-const rawData = {
-  day: [
-    [0, 5, 2],
-    [0, 6, 10],
-  ],
-  week: [
-    [0, 5, 2],
-    [1, 4, 10],
-    [1, 5, 2],
-    [2, 6, 4],
-    [3, 3, 2],
-    [4, 5, 2],
-    [4, 6, 7],
-  ],
-  month: [
-    [0, 4, 2],
-    [0, 5, 5],
-    [0, 6, 2],
-    [1, 4, 2],
-    [1, 5, 10],
-    [1, 15, 3],
-    [2, 3, 2],
-    [2, 4, 10],
-    [2, 5, 10],
-    [2, 6, 10],
-    [2, 7, 5],
-  ],
-  year: [
-    [2, 5, 1],
-    [3, 4, 5],
-    [3, 5, 5],
-    [4, 5, 4],
-    [4, 6, 4],
-    [5, 4, 2],
-    [5, 5, 10],
-    [5, 6, 2],
-    [6, 3, 12],
-    [6, 4, 10],
-    [6, 5, 10],
-    [6, 6, 10],
-    [6, 7, 5],
-  ],
-};
-const viewConfigs = {
-  day: {
-    labels: ["Today"],
-    yLabels: Array.from({ length: 25 }, (_, i) => `${24 - i}:00`),
-    data: generateChartGridData(["Today"], 24, rawData.day),
-  },
-  week: {
-    labels: ["S", "M", "T", "W", "T", "F", "S"],
-    yLabels: Array.from({ length: 25 }, (_, i) => `${24 - i}:00`),
-    data: generateChartGridData(
-      ["S", "M", "T", "W", "T", "F", "S"],
-      24,
-      rawData.week,
-    ),
-  },
-  month: {
-    labels: ["1", "8", "15", "22", "29"],
-    yLabels: Array.from({ length: 25 }, (_, i) => `${24 - i}:00`),
-    data: generateChartGridData(
-      ["1", "8", "15", "22", "29"],
-      24,
-      rawData.month,
-    ),
-  },
-  year: {
-    labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-    yLabels: Array.from({ length: 25 }, (_, i) => `${24 - i}:00`),
-    data: generateChartGridData(
-      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-      24,
-      rawData.year,
-    ),
-  },
 };
 const chartLabel = {
   day: {
@@ -135,7 +82,12 @@ const chartLabel = {
   },
 };
 const chartData = computed(() => {
-  return viewConfigs[props.activeView];
+  const labels = columnLabels.value[props.activeView];
+  return {
+    labels,
+    yLabels: HOUR_LABELS,
+    data: generateChartGridData(labels.length, props.slots),
+  };
 });
 </script>
 <template>

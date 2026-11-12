@@ -143,6 +143,11 @@ export function summarizeDay(
   };
 }
 
+/** 爆發指數（首頁與分析頁共用）：當天做過練習就降溫到 30％，否則 70％ */
+export function burstIndexOf(summary: DaySummary) {
+  return summary.hasPractice ? 30 : 70;
+}
+
 /** 秒數轉成顯示用的分鐘數：取到小數一位，有練習但不到 0.1 分鐘時顯示 0.1 */
 export function toDisplayMinutes(seconds: number) {
   if (seconds <= 0) return 0;
@@ -212,6 +217,34 @@ export function formatViewLabel(view: AnalysisView, date: Date) {
     case "year":
       return `${yearMonth(start)} - ${yearMonth(last)}`;
   }
+}
+
+/**
+ * 大吼次數的三個級距下限，各檢視不同，沿用設計稿「大吼時段」圖例的數字
+ * （日：1-2／3-4／>5，週、月：1-14／15-24／>25，年：1-59／60-119／>120）。
+ */
+export const YELLING_COUNT_STEPS: Record<
+  AnalysisView,
+  [low: number, mid: number, high: number]
+> = {
+  day: [1, 3, 5],
+  week: [1, 15, 25],
+  month: [1, 15, 25],
+  year: [1, 60, 120],
+};
+
+/** 次數落在第幾個級距：0 表示沒有，1～3 對應圖例由淺到深 */
+export function yellingCountLevel(view: AnalysisView, count: number) {
+  const [low, mid, high] = YELLING_COUNT_STEPS[view];
+  if (count >= high) return 3;
+  if (count >= mid) return 2;
+  return count >= low ? 1 : 0;
+}
+
+/** 「累積次數」的顯示文字：超過最高級距時沿用設計稿的「> 5」寫法 */
+export function formatYellingCount(view: AnalysisView, count: number) {
+  const high = YELLING_COUNT_STEPS[view][2];
+  return count > high ? `> ${high}` : String(count);
 }
 
 export interface YellingSummary {
