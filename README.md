@@ -1,9 +1,10 @@
 # <img src="public/images/home/normal-circle.webp" height="40px"/> OFFWORK APP
+
 ![OFFWORK](public/ogImage.webp)
-[![Nuxt.js](https://img.shields.io/badge/Nuxt.js-4.0.3-00DC82?logo=nuxt&logoColor=white)](https://nuxt.com/)
-[![Vue.js](https://img.shields.io/badge/Vue.js-3.5.18-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-6.14.0-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![GSAP](https://img.shields.io/badge/GSAP-6.14.0-0AE448?logo=gsap&logoColor=white)](https://gsap.com/)
+[![Nuxt.js](https://img.shields.io/badge/Nuxt.js-4.6.4-00DC82?logo=nuxt&logoColor=white)](https://nuxt.com/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.5.45-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.19-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![GSAP](https://img.shields.io/badge/GSAP-3.15.1-0AE448?logo=gsap&logoColor=white)](https://gsap.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
 
 > 丟掉煩惱，讓腦袋準時下班
@@ -16,8 +17,8 @@
 
 ## 👥 團隊成員 (Team Members)
 
-*   **UI/UX 設計**: UI/UX 組成員共 6 名
-*   **前端開發**: 前端組成員共 3 名
+- **UI/UX 設計**: UI/UX 組成員共 6 名
+- **前端開發**: 前端組成員共 3 名
 
 ## 🌐 線上 Demo (Live Demo)
 
@@ -27,26 +28,28 @@
 
 ## ✨ 主要功能 (Features)
 
-*   **吶喊練習**: 使用者的吶喊分貝數會即時反應在畫面上，達到一個視覺化的情緒釋放體驗。
-*   **平靜呼吸**: 提供引導式的呼吸練習，幫助使用者在壓力事件後恢復平靜。
-*   **個人目標設定**: 使用者可以設定每日的呼吸練習與睡眠目標。
-*   **情緒分析**: 透過圖表視覺化呈現使用者的情緒與練習數據。
+- **吶喊練習**: 使用者的吶喊分貝數會即時反應在畫面上，達到一個視覺化的情緒釋放體驗。
+- **平靜呼吸**: 提供引導式的呼吸練習，幫助使用者在壓力事件後恢復平靜。
+- **個人目標設定**: 使用者可以設定每日的呼吸練習與睡眠目標。
+- **情緒分析**: 透過圖表視覺化呈現使用者的情緒與練習數據。
 
 ## 🛠️ 使用技術 (Tech Stack)
 
-*   **Frontend Framework**: [Vue3](https://vuejs.org/) | [Nuxt.js 3](https://nuxt.com/)
-*   **Language**: [TypeScript](https://www.typescriptlang.org/)
-*   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-*   **Animation**: [Lottie](https://lottiefiles.com/)
+- **Frontend Framework**: [Vue3](https://vuejs.org/) | [Nuxt.js 4](https://nuxt.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animation**: [Lottie](https://lottiefiles.com/)
 
 ## 🚀 專案啟動 (Getting Started)
 
 1.  **安裝依賴 (Install dependencies)**:
+
     ```bash
     npm install
     ```
 
 2.  **啟動開發環境 (Run development server)**:
+
     ```bash
     npm run dev
     ```
