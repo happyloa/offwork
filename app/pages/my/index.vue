@@ -4,8 +4,44 @@ useSeoMeta({
   ogTitle: "我的 | 健康生活 OFFWORK APP",
 });
 const nav = useTemplateRef("nav");
-const haveData = ref(false);
 const isIntersecting = ref(true);
+
+// 今天的練習摘要（來自存在瀏覽器的練習紀錄）；今天有練習才顯示「今天做了什麼？」
+const { records } = usePracticeRecords();
+const todaySummary = computed(() => summarizeDay(records.value, new Date()));
+const haveData = computed(() => todaySummary.value.hasPractice);
+
+// 呼吸目標：「目標」頁設定的呼吸時長
+const breathingTargetMinutes = ref(DEFAULT_BREATHING_MINUTES);
+
+// 大吼：超過每日上限時沿用設計稿的「5 次以上」寫法
+const yellingButton = computed(() => {
+  const count = todaySummary.value.yellingCount;
+  const isOverLimit = count > YELLING_DAILY_LIMIT;
+  return {
+    title: "大吼",
+    data: String(isOverLimit ? YELLING_DAILY_LIMIT : count),
+    unit: isOverLimit ? "次以上" : "次",
+    color: count ? "text-alert-success" : "text-neutral-300",
+    url: "/analysis",
+  };
+});
+
+// 呼吸：今天的分鐘數，有呼吸才標示是否達到目標（未達標用紅色，與睡眠卡片一致）
+const breathingButton = computed(() => {
+  const minutes = toDisplayMinutes(todaySummary.value.breathingSeconds);
+  const isReached = minutes >= breathingTargetMinutes.value;
+  let color = "text-neutral-300";
+  if (minutes) color = isReached ? "text-alert-success" : "text-accent";
+  return {
+    title: "呼吸",
+    data: String(minutes),
+    unit: "分",
+    color,
+    url: "/analysis",
+    isUpStandard: minutes ? isReached : undefined,
+  };
+});
 const showCeremonyNav = ref(false);
 let observer = null;
 // 因為需要觀察火山君自我介紹頁面是否離開視線
@@ -18,9 +54,7 @@ const createObserver = () => {
 onMounted(() => {
   observer = createObserver();
   observer.observe(nav.value);
-  if (import.meta.client) {
-    haveData.value = sessionStorage.getItem("isRelieved") == "true";
-  }
+  breathingTargetMinutes.value = readBreathingTargetMinutes();
 });
 onUnmounted(() => {
   observer.disconnect();
@@ -87,15 +121,7 @@ onUnmounted(() => {
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <CardButton
-            :cardButton="{
-              title: '大吼',
-              data: '5',
-              unit: '次以上',
-              color: 'text-alert-success',
-              url: '/analysis',
-            }"
-          />
+          <CardButton :cardButton="yellingButton" />
           <CardButton
             :cardButton="{
               title: '冥想',
@@ -105,16 +131,7 @@ onUnmounted(() => {
               url: '/analysis',
             }"
           />
-          <CardButton
-            :cardButton="{
-              title: '呼吸',
-              data: '30',
-              unit: '分',
-              color: 'text-alert-success',
-              url: '/analysis',
-              isUpStandard: true,
-            }"
-          />
+          <CardButton :cardButton="breathingButton" />
           <CardButton
             :cardButton="{
               title: '睡眠',
@@ -160,7 +177,7 @@ onUnmounted(() => {
           <CardButton
             :cardButton="{
               title: '呼吸',
-              data: '3',
+              data: String(breathingTargetMinutes),
               unit: '分',
               color: 'text-alert-success',
               url: '/my/target/breath',

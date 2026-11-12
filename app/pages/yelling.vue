@@ -38,9 +38,6 @@ const startYelling = () => {
   isYelling.value = true;
   if (!import.meta.client) return;
 
-  // 標記已放鬆
-  sessionStorage.setItem("isRelieved", "true");
-
   // 初始化大吼計時
   yellingStartMs.value = Date.now();
   sessionStorage.setItem("yellingTimeElapsed", "0"); // 先清成 0

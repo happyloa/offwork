@@ -112,9 +112,6 @@ function startPreRoll() {
  * 生命週期：掛載/卸載
  * ────────────────────────────────────────────── */
 onMounted(() => {
-  if (!import.meta.client) return;
-  // 設定已放鬆
-  sessionStorage.setItem("isRelieved", "true");
   startPreRoll();
 });
 

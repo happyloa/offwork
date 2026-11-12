@@ -23,8 +23,11 @@ const showCeremonyNav = ref(false);
 const showFeelingBetter = ref(false);
 const showFeelingCalm = ref(false);
 
-// 記錄 isRelieved 值，供後續判斷使用
-const isRelieved = ref(false);
+// 今天是否已經做過練習（大吼或呼吸）：決定火山君的顏色、標語與爆發指數。
+// 來自存在瀏覽器的練習紀錄，所以關掉分頁再回來仍然記得，隔天會重新開始
+const { records } = usePracticeRecords();
+const todaySummary = computed(() => summarizeDay(records.value, new Date()));
+const isRelieved = computed(() => todaySummary.value.hasPractice);
 
 // 監看 URL → UI（下班儀式）
 watch(hasOpenParam, (has) => {
@@ -91,16 +94,11 @@ function readBreathingElapsed() {
   breathingElapsedSec.value = raw ? Math.max(0, parseInt(raw, 10) || 0) : 0;
 }
 
-// 首次進入頁面：若有參數就打開對應的 bottom sheet；並讀 isRelieved
+// 首次進入頁面：若有參數就打開對應的 bottom sheet
 onMounted(() => {
   if (hasOpenParam.value) showCeremonyNav.value = true;
   if (hasFeelingParam.value) showFeelingBetter.value = true;
   if (hasCalmParam.value) showFeelingCalm.value = true;
-
-  if (import.meta.client) {
-    const raw = sessionStorage.getItem("isRelieved");
-    if (raw !== null) isRelieved.value = raw === "true";
-  }
 
   // 一進頁面先讀一次（避免直接開 bottom sheet 時顯示不到）
   readYellingElapsed();
@@ -163,7 +161,7 @@ watch(showFeelingCalm, (open) => {
       class="relative z-10 flex items-center justify-center gap-1 text-sm font-bold text-white"
     >
       <img src="/icons/light.svg" alt="白色點點" />
-      {{ isRelieved ? "爆發指數 30％" : "爆發指數 70％" }}
+      爆發指數 {{ burstIndexOf(todaySummary) }}％
     </p>
     <!-- 火山君（會隨著爆發指數來換） -->
     <img
