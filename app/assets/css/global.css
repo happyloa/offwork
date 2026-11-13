@@ -1,4 +1,16 @@
 html {
   background: #122a3a;
   scrollbar-width: none;
+  /* 像原生 App 一樣，畫面上的文字不能被反白選取；點擊、捲動、拖曳不受影響 */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 文字輸入欄位要能選取與編輯（Safari 在 user-select: none 底下會無法輸入）。
+   目前沒有這類欄位，先留著，之後加輸入框時才不會踩到 */
+input,
+textarea,
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
 }
