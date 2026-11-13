@@ -96,7 +96,7 @@ onUnmounted(() => {
         :stroke-dasharray="pathLength"
         :stroke-dashoffset="strokeDashoffset"
         stroke-linecap="round"
-        class="transisiton-all duration-700"
+        class="transition-all duration-700"
       />
     </svg>
     <div class="absolute -bottom-2 mt-2 flex flex-col items-center">
